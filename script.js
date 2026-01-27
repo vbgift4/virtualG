@@ -1,6 +1,10 @@
 // Main interactions for the birthday site
-// Updated: keeps confetti + floating balloons, cartoon cake flame works as before,
-// playlist persistent player remains unchanged.
+// Changes:
+// - All nav items get .active (violet) when selected.
+// - Other buttons get a brief violet "clicked" class on press.
+// - Confetti runs continuously while Home is active and stops when leaving Home.
+// - Home fades out when navigating away (smooth UX).
+// - Cake is an inline SVG vector and flame click still opens popup.
 
 document.addEventListener('DOMContentLoaded', ()=>{
 
@@ -11,35 +15,77 @@ document.addEventListener('DOMContentLoaded', ()=>{
   const heroTap = document.getElementById('heroTap');
   const bgAudio = document.getElementById('bgAudio');
 
-  // SPA navigation (show/hide pages)
+  // Helper: add brief click feedback class for non-nav buttons
+  function addClickFeedback(btn){
+    if (!btn) return;
+    btn.classList.add('clicked');
+    clearTimeout(btn._clickTimeout);
+    btn._clickTimeout = setTimeout(()=> {
+      btn.classList.remove('clicked');
+    }, 280);
+  }
+
+  // Attach ephemeral clicked class to non-nav buttons for visual feedback
+  document.querySelectorAll('button:not(.nav-item)').forEach(b=>{
+    b.addEventListener('mousedown', ()=> addClickFeedback(b));
+    b.addEventListener('keydown', (e)=>{
+      if (e.key === 'Enter' || e.key === ' ') addClickFeedback(b);
+    });
+  });
+
+  // SPA navigation with smooth fade-out for home
   function showPage(id){
-    pages.forEach(p=> p.id===id ? p.classList.add('active') : p.classList.remove('active'));
-    navItems.forEach(n=> n.classList.toggle('active', n.dataset.target===id));
-    // stop video if switching away
-    if (id !== 'playlist') hidePlayer();
+    const current = document.querySelector('.page.active');
+    const target = document.getElementById(id);
+    // update nav active state
+    navItems.forEach(n => n.classList.toggle('active', n.dataset.target === id));
+
+    if (current && current.id === 'home' && id !== 'home') {
+      // Fade out home smoothly, then switch
+      current.classList.remove('active');
+      // stop confetti immediately
+      stopConfetti();
+      // After CSS transition (matching 360ms) ensure target becomes active
+      setTimeout(()=> {
+        pages.forEach(p=> {
+          p.id === id ? p.classList.add('active') : p.classList.remove('active');
+        });
+      }, 380);
+    } else if (id === 'home') {
+      // show home and start confetti
+      pages.forEach(p=> p.id === id ? p.classList.add('active') : p.classList.remove('active'));
+      // small timeout to allow fade-in
+      setTimeout(()=> startConfetti(), 80);
+    } else {
+      // normal switch
+      pages.forEach(p=> p.id === id ? p.classList.add('active') : p.classList.remove('active'));
+      stopConfetti();
+    }
   }
 
   navItems.forEach(btn=>{
     btn.addEventListener('click', ()=>{
       const target = btn.dataset.target;
       showPage(target);
-      if (target === 'home') {
-        document.getElementById('home').scrollIntoView({behavior:'smooth'});
-      }
+    });
+    btn.addEventListener('keydown', (e)=>{
+      if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); btn.click(); }
     });
   });
 
   // Logo returns to home
   logoBtn.addEventListener('click', ()=> showPage('home'));
 
-  // Hero tap: play/pause audio and start confetti
+  // Hero tap: play/pause audio (user gesture) and keep confetti running
   heroTap.addEventListener('click', ()=> {
     if (bgAudio.paused) {
       bgAudio.play().catch(()=>{/* playback blocked */});
-      startConfetti();
     } else {
       bgAudio.pause();
     }
+    // ensure confetti running when tapping home
+    const home = document.getElementById('home');
+    if (home && home.classList.contains('active')) startConfetti();
   });
 
   // Keyboard accessibility: space/enter on hero
@@ -50,18 +96,21 @@ document.addEventListener('DOMContentLoaded', ()=>{
   // --- Cake flame interaction ---
   const flameGroup = document.getElementById('flameGroup');
   const cakeMessage = document.getElementById('cakeMessage');
-  const closeBtn = cakeMessage.querySelector('.closeBtn');
+  const closeBtn = cakeMessage ? cakeMessage.querySelector('.closeBtn') : null;
 
   if (flameGroup) {
     flameGroup.addEventListener('click', ()=> {
-      cakeMessage.classList.remove('hidden');
+      if (cakeMessage) cakeMessage.classList.remove('hidden');
     });
     flameGroup.addEventListener('keydown', (e)=> {
       if (e.key==='Enter' || e.key===' ') { e.preventDefault(); flameGroup.click(); }
     });
   }
   if (closeBtn) {
-    closeBtn.addEventListener('click', ()=> cakeMessage.classList.add('hidden'));
+    closeBtn.addEventListener('click', ()=> {
+      cakeMessage.classList.add('hidden');
+      addClickFeedback(closeBtn);
+    });
   }
 
   // --- Message typing animation ---
@@ -79,10 +128,10 @@ document.addEventListener('DOMContentLoaded', ()=>{
     function step(){
       if (i<total){
         target.textContent += text[i++];
-        pencil.style.transform = `translateX(${Math.min(160, i)}px) rotate(${Math.min(8,i/2)}deg)`;
+        if (pencil) pencil.style.transform = `translateX(${Math.min(160, i)}px) rotate(${Math.min(8,i/2)}deg)`;
         setTimeout(step, 30 + (Math.random()*40));
       } else {
-        pencil.style.transform = 'translateX(0) rotate(0)';
+        if (pencil) pencil.style.transform = 'translateX(0) rotate(0)';
         if (onDone) onDone();
       }
     }
@@ -92,7 +141,7 @@ document.addEventListener('DOMContentLoaded', ()=>{
   // Start typing when the message page becomes active
   const observer = new MutationObserver(()=> {
     const active = document.querySelector('.page.active');
-    if (active && active.id === 'message' && textEl.textContent.trim()==='') {
+    if (active && active.id === 'message' && textEl && textEl.textContent.trim()==='') {
       typeWrite(textEl, message, ()=> {
         setTimeout(()=>{
           textEl.style.transition='opacity 700ms';
@@ -100,7 +149,7 @@ document.addEventListener('DOMContentLoaded', ()=>{
           setTimeout(()=> {
             textEl.style.opacity=1;
             textEl.textContent = followMsg;
-            follow.classList.remove('hidden');
+            if (follow) follow.classList.remove('hidden');
           },700);
         }, 800);
       });
@@ -108,7 +157,7 @@ document.addEventListener('DOMContentLoaded', ()=>{
   });
   observer.observe(document.querySelector('main'), {attributes:true, subtree:true, attributeFilter:['class']});
 
-  // --- Playlist: persistent player area (unchanged behavior) ---
+  // --- Playlist: persistent player area ---
   const playlistItems = document.querySelectorAll('.playlist-item');
   const playerWrap = document.getElementById('playlistPlayer');
   const playerIframe = document.getElementById('playerIframe');
@@ -121,15 +170,13 @@ document.addEventListener('DOMContentLoaded', ()=>{
     playerTitle.textContent = title || 'Playing';
     playerIframe.src = url + '?autoplay=1&rel=0';
     playerWrap.setAttribute('aria-hidden','false');
-    // ensure visible on mobile: scroll player into view
     playerWrap.scrollIntoView({behavior:'smooth', block:'center'});
-    playerClose.focus();
+    if (playerClose) playerClose.focus();
   }
 
   function hidePlayer(){
     if (!playerWrap || !playerIframe) return;
     playerWrap.setAttribute('aria-hidden','true');
-    // stop playback
     try { playerIframe.src = ''; } catch(e){}
   }
 
@@ -139,7 +186,6 @@ document.addEventListener('DOMContentLoaded', ()=>{
       const title = li.textContent.trim();
       showPlayer(title, url);
     });
-    // keyboard support
     li.addEventListener('keydown', (e)=>{
       if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); li.click(); }
     });
@@ -148,7 +194,7 @@ document.addEventListener('DOMContentLoaded', ()=>{
   if (playerClose) {
     playerClose.addEventListener('click', ()=> {
       hidePlayer();
-      // return focus to list for accessibility
+      addClickFeedback(playerClose);
       const first = playlistList.querySelector('.playlist-item');
       if (first) first.focus();
     });
@@ -160,7 +206,7 @@ document.addEventListener('DOMContentLoaded', ()=>{
   let confettiPieces = [];
   let confettiRunning = false;
 
-  function resizeCanvas(){ if (!confettiCanvas) return; confettiCanvas.width = window.innerWidth; confettiCanvas.height = window.innerHeight; }
+  function resizeCanvas(){ if (!confettiCanvas) return; confettiCanvas.width = window.innerWidth; confettiCanvas.height = window.innerHeight; if (confettiRunning) createConfetti(); }
   window.addEventListener('resize', resizeCanvas);
   resizeCanvas();
 
@@ -168,7 +214,7 @@ document.addEventListener('DOMContentLoaded', ()=>{
 
   function createConfetti(){
     confettiPieces = [];
-    const count = 100;
+    const count = Math.max(60, Math.floor((confettiCanvas.width*confettiCanvas.height)/90000)); // scale by viewport
     const colors = ['#ff7fbf','#ffd1e6','#cbb0ff','#ffe89a','#ffb4c6','#ff9db7'];
     for (let i=0;i<count;i++){
       confettiPieces.push({
@@ -178,7 +224,7 @@ document.addEventListener('DOMContentLoaded', ()=>{
         h: random(8,18),
         color: colors[Math.floor(Math.random()*colors.length)],
         rot: random(0,360),
-        velY: random(1.5,5),
+        velY: random(1.5,4.5),
         velX: random(-1.5,1.5),
         rotSpeed: random(-8,8),
       });
@@ -218,7 +264,6 @@ document.addEventListener('DOMContentLoaded', ()=>{
     createConfetti();
     confettiRunning = true;
     animateConfetti();
-    setTimeout(()=> { stopConfetti(); }, 9000);
   }
   function stopConfetti(){
     if (!ctx || !confettiRunning) return;
@@ -226,6 +271,11 @@ document.addEventListener('DOMContentLoaded', ()=>{
     cancelAnimationFrame(confettiTimer);
     confettiTimer = null;
     ctx.clearRect(0,0,confettiCanvas.width, confettiCanvas.height);
+  }
+
+  // Ensure confetti starts if home was active on load
+  if (document.querySelector('.page.active')?.id === 'home') {
+    startConfetti();
   }
 
   // Accessibility: number-key navigation
@@ -237,6 +287,6 @@ document.addEventListener('DOMContentLoaded', ()=>{
     if (e.key === '5') showPage('playlist');
   });
 
-  // Initialize to home
-  showPage('home');
+  // Initialize to home (ensure active class exists)
+  if (!document.querySelector('.page.active')) showPage('home');
 });
