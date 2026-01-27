@@ -1,10 +1,9 @@
-// Main interactions: reduced spacing, lazy image loading, and collapsible sections on mobile.
-// Keeps previous features: nav active state, confetti, balloon animation, cake flame popup,
-// message typing animation, playlist persistent player.
+// Main interactions: integrated interactive SVG flame extinguish, confetti, lazy loading, collapsibles,
+// fixed header, shorter layout. Copy this file and replace your existing script.js.
 
 document.addEventListener('DOMContentLoaded', ()=>{
 
-  // Refs
+  // Basic refs
   const navItems = document.querySelectorAll('.nav-item');
   const pages = document.querySelectorAll('.page');
   const logoBtn = document.getElementById('logoBtn');
@@ -13,8 +12,8 @@ document.addEventListener('DOMContentLoaded', ()=>{
   const mainEl = document.querySelector('main');
 
   /* -------------------------
-     Helper: click feedback
-     ------------------------- */
+     Click feedback helper
+  ------------------------- */
   function addClickFeedback(btn){
     if (!btn) return;
     btn.classList.add('clicked');
@@ -29,8 +28,8 @@ document.addEventListener('DOMContentLoaded', ()=>{
   });
 
   /* -------------------------
-     Scroll main to top on page change
-     ------------------------- */
+     Scroll main to top on change
+  ------------------------- */
   function scrollMainTop(){
     if (!mainEl) return;
     try { mainEl.scrollTo({ top: 0, behavior: 'smooth' }); }
@@ -39,11 +38,12 @@ document.addEventListener('DOMContentLoaded', ()=>{
 
   /* -------------------------
      Page navigation
-     ------------------------- */
+  ------------------------- */
   function showPage(id){
     navItems.forEach(n => n.classList.toggle('active', n.dataset.target === id));
     scrollMainTop();
     const current = document.querySelector('.page.active');
+
     if (current && current.id === 'home' && id !== 'home') {
       stopConfetti();
       current.classList.remove('active');
@@ -72,7 +72,7 @@ document.addEventListener('DOMContentLoaded', ()=>{
 
   /* -------------------------
      Hero tap: audio + confetti
-     ------------------------- */
+  ------------------------- */
   heroTap.addEventListener('click', ()=> {
     if (bgAudio.paused) bgAudio.play().catch(()=>{});
     else bgAudio.pause();
@@ -84,20 +84,55 @@ document.addEventListener('DOMContentLoaded', ()=>{
   });
 
   /* -------------------------
-     Cake flame popup
-     ------------------------- */
+     Cake flame: extinguish animation + popup
+     (replaces previous flame handler; uses inline SVG elements with ids #flameGroup and #smoke)
+  ------------------------- */
   const flameGroup = document.getElementById('flameGroup');
+  const smoke = document.getElementById('smoke');
   const cakeMessage = document.getElementById('cakeMessage');
   const closeBtn = cakeMessage ? cakeMessage.querySelector('.closeBtn') : null;
-  if (flameGroup){
-    flameGroup.addEventListener('click', ()=> { if (cakeMessage) cakeMessage.classList.remove('hidden'); });
-    flameGroup.addEventListener('keydown', (e)=> { if (e.key==='Enter' || e.key===' ') { e.preventDefault(); flameGroup.click(); }});
+
+  if (flameGroup) {
+    function extinguishAndShow() {
+      // If already extinguished, just open popup
+      if (flameGroup.classList.contains('extinguished')) {
+        if (cakeMessage) cakeMessage.classList.remove('hidden');
+        return;
+      }
+
+      // Play extinguish: add class to trigger CSS animations
+      flameGroup.classList.add('extinguished');
+
+      // Make smoke visible (some SVG placements may need inline style toggling)
+      if (smoke) smoke.style.opacity = 1;
+
+      // Delay the popup slightly so the smoke animation is visible
+      setTimeout(()=> {
+        if (cakeMessage) cakeMessage.classList.remove('hidden');
+      }, 420);
+    }
+
+    flameGroup.addEventListener('click', extinguishAndShow);
+    flameGroup.addEventListener('keydown', (e)=> {
+      if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); extinguishAndShow(); }
+    });
   }
-  if (closeBtn) closeBtn.addEventListener('click', ()=> { cakeMessage.classList.add('hidden'); addClickFeedback(closeBtn); });
+
+  if (closeBtn) {
+    closeBtn.addEventListener('click', ()=> {
+      if (cakeMessage) cakeMessage.classList.add('hidden');
+      addClickFeedback(closeBtn);
+      // Reset flame after closing so user can repeat the interaction.
+      setTimeout(()=> {
+        if (flameGroup) flameGroup.classList.remove('extinguished');
+        if (smoke) smoke.style.opacity = 0;
+      }, 300);
+    });
+  }
 
   /* -------------------------
      Typing animation (Message)
-     ------------------------- */
+  ------------------------- */
   const textEl = document.getElementById('typeText');
   const pencil = document.getElementById('pencilSvg');
   const follow = document.getElementById('messageFollow');
@@ -141,7 +176,7 @@ document.addEventListener('DOMContentLoaded', ()=>{
 
   /* -------------------------
      Playlist player (persistent)
-     ------------------------- */
+  ------------------------- */
   const playlistItems = document.querySelectorAll('.playlist-item');
   const playerWrap = document.getElementById('playlistPlayer');
   const playerIframe = document.getElementById('playerIframe');
@@ -168,7 +203,7 @@ document.addEventListener('DOMContentLoaded', ()=>{
 
   /* -------------------------
      Confetti (runs while home active)
-     ------------------------- */
+  ------------------------- */
   const confettiCanvas = document.getElementById('confetti');
   const ctx = confettiCanvas ? confettiCanvas.getContext('2d') : null;
   let confettiPieces = [], confettiRunning = false, confettiTimer = null;
@@ -213,7 +248,7 @@ document.addEventListener('DOMContentLoaded', ()=>{
 
   /* -------------------------
      Lazy-load images (IntersectionObserver)
-     ------------------------- */
+  ------------------------- */
   const lazyImages = document.querySelectorAll('img.lazy');
   if ('IntersectionObserver' in window && lazyImages.length > 0) {
     const imgObserver = new IntersectionObserver((entries, obs) => {
@@ -232,7 +267,6 @@ document.addEventListener('DOMContentLoaded', ()=>{
     }, { root: null, rootMargin: '120px', threshold: 0.01 });
     lazyImages.forEach(img => imgObserver.observe(img));
   } else {
-    // Fallback: load all immediately
     lazyImages.forEach(img => {
       const src = img.getAttribute('data-src');
       if (src) img.src = src;
@@ -242,9 +276,7 @@ document.addEventListener('DOMContentLoaded', ()=>{
 
   /* -------------------------
      Collapsible sections on small screens
-     - Elements: .collapsible (wrap); .collapsible-toggle (button); .collapsible-content (wrapper)
-     - On small screens (<=900px) collapsible default collapsed; on large screens always open.
-     ------------------------- */
+  ------------------------- */
   const collapsibles = document.querySelectorAll('.collapsible');
   const breakpoint = window.matchMedia('(max-width: 900px)');
 
@@ -255,7 +287,6 @@ document.addEventListener('DOMContentLoaded', ()=>{
       if (!toggle || !content) return;
 
       if (breakpoint.matches) {
-        // small screens: start collapsed if data-collapsed attribute present
         const startCollapsed = c.hasAttribute('data-collapsed');
         c.setAttribute('data-open', startCollapsed ? 'false' : 'true');
         toggle.setAttribute('aria-expanded', String(!startCollapsed));
@@ -263,17 +294,14 @@ document.addEventListener('DOMContentLoaded', ()=>{
           const isOpen = c.getAttribute('data-open') === 'true';
           c.setAttribute('data-open', String(!isOpen));
           toggle.setAttribute('aria-expanded', String(isOpen));
-          // scroll into view when opening
           if (!isOpen) {
             const page = c.closest('.page');
             if (page) page.scrollTo({ top: 0, behavior: 'smooth' });
           }
         });
       } else {
-        // large screens: ensure open and remove aria collapsed state
         c.setAttribute('data-open', 'true');
         toggle.setAttribute('aria-expanded', 'true');
-        // clicking toggle on large screens still toggles, but default is open
         toggle.addEventListener('click', ()=> {
           const isOpen = c.getAttribute('data-open') === 'true';
           c.setAttribute('data-open', String(!isOpen));
@@ -282,13 +310,12 @@ document.addEventListener('DOMContentLoaded', ()=>{
       }
     });
   }
-  // initialize and update on resize
   setCollapsibleDefault();
   breakpoint.addEventListener('change', setCollapsibleDefault);
 
   /* -------------------------
      Keyboard nav shortcuts
-     ------------------------- */
+  ------------------------- */
   document.addEventListener('keydown', (e)=>{
     if (e.key === '1') showPage('home');
     if (e.key === '2') showPage('cake');
