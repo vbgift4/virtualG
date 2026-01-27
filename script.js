@@ -134,7 +134,7 @@ document.addEventListener('DOMContentLoaded', ()=>{
   const pencil = document.getElementById('pencilSvg');
   const follow = document.getElementById('messageFollow');
   const message = "Dear you,\n\nToday I celebrate you — your smile, your warmth,\nand every little thing that makes you special.\n\nLove you always.";
-  const followMsg = "And one more thing — you're the best part of my every day. 💖";
+
 
   function typeWrite(target, text, onDone){
     if (!target) return;
