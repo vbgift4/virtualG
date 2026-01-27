@@ -118,9 +118,48 @@ main{flex:1}
 .playlist{list-style:none;padding:0;margin:12px 0}
 .playlist li{padding:12px;border-radius:8px;background:rgba(255,255,255,0.85);margin-bottom:8px;cursor:pointer;box-shadow:0 6px 12px rgba(0,0,0,0.04)}
 .playlist li:hover{background:var(--pink)}
-.video-screen{position:fixed;left:0;right:0;top:0;bottom:0;display:flex;align-items:center;justify-content:center;background:rgba(0,0,0,0.6);z-index:70}
-.video-screen iframe{width:min(900px,95%);height:min(560px,66%);border-radius:10px}
-.closeVideo{position:absolute;top:8px;right:12px;background:transparent;border:0;color:white;font-size:22px}
+
+/* Video overlay */
+.video-screen{
+  position:fixed;
+  left:0;right:0;top:0;bottom:0;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  background:rgba(0,0,0,0.6);
+  z-index:70;
+  -webkit-overflow-scrolling:touch;
+}
+.video-screen iframe{
+  width:min(900px,95%);
+  height:min(560px,66%);
+  border-radius:10px;
+  border:0;
+  z-index:10; /* keep iframe under the close button */
+  background:#000;
+}
+
+/* Close button: larger tap target and above iframe */
+.closeVideo{
+  position:absolute;
+  top:12px;
+  right:12px;
+  background:rgba(0,0,0,0.6);
+  color:white;
+  border:0;
+  font-size:20px;
+  width:44px;
+  height:44px;
+  border-radius:999px;
+  display:inline-flex;
+  align-items:center;
+  justify-content:center;
+  cursor:pointer;
+  z-index:9999; /* ensure it's above the iframe */
+  box-shadow:0 6px 14px rgba(0,0,0,0.35);
+  pointer-events:auto;
+}
+.closeVideo:focus{outline:3px solid rgba(255,255,255,0.12)}
 
 /* Footer */
 .footer{text-align:center;padding:12px 6px;color:#7a4a61;font-size:.95rem}
@@ -137,6 +176,7 @@ main{flex:1}
   .nav-right{gap:4px}
   .nav-item span{display:none}
   .logo-text{font-size:1rem}
+  .closeVideo{width:40px;height:40px;font-size:18px;top:8px;right:8px}
 }
 @media (max-width:520px){
   .flower-grid{grid-template-columns:1fr;grid-auto-rows:150px}
