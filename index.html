@@ -55,7 +55,6 @@
         <h1 class="title">HAPPY BIRTHDAY!</h1>
         <p class="sub">Hope today makes you smile a little more than usual.</p>
 
-        <!-- decorative GIF (non-lazy so it appears quickly on home) -->
         <img src="assets/balloons.gif" alt="" class="balloons" aria-hidden="true"/>
 
         <p class="hint">Tap anywhere here to play music</p>
@@ -71,28 +70,80 @@
         <p class="section-sub">Tap the flame to reveal a special message.</p>
 
         <div class="cake-wrap" id="cakeWrap" aria-hidden="false">
-          <!-- Vector cartoon cake (SVG) -->
-          <svg id="cartoonCake" class="cake-svg" viewBox="0 0 260 220" role="img" aria-label="Cute cartoon cake">
-            <ellipse cx="130" cy="200" rx="100" ry="12" fill="#ffeef8" opacity="0.9"/>
-            <rect x="35" y="110" width="190" height="50" rx="18" fill="#ffd7ea" stroke="#f6a8d0" stroke-width="3"/>
-            <path d="M35 110c18-28 50-18 95-18s77-10 95 18v6H35z" fill="#fff7ff"/>
-            <rect x="60" y="70" width="140" height="50" rx="14" fill="#ffecf9" stroke="#f6a8d0" stroke-width="3"/>
-            <g fill="#ff7fbf">
-              <rect x="85" y="80" width="6" height="12" rx="3" transform="rotate(-12 85 80)"/>
-              <rect x="110" y="88" width="6" height="12" rx="3" transform="rotate(12 110 88)"/>
-              <rect x="140" y="78" width="6" height="12" rx="3" transform="rotate(-6 140 78)"/>
-              <rect x="170" y="86" width="6" height="12" rx="3" transform="rotate(18 170 86)"/>
-            </g>
-            <rect x="125" y="28" width="10" height="44" rx="3" fill="#6f42c1"/>
-            <g id="flameGroup" class="flame" role="button" tabindex="0" aria-label="Blow out the candle">
-              <path d="M130 20c6 -10 12 -10 12 -18 0 -12 -8 -12 -12 -12s-12 0-12 12c0 8 6 8 12 18z" fill="#ffb84d"/>
-              <path d="M130 16c3 -7 6 -7 6 -12 0 -6 -4 -6 -6 -6s-6 0-6 6c0 5 3 5 6 12z" fill="#fff2c9" opacity="0.85"/>
+          <!-- Fully inline SVG vector cake (interactive) -->
+          <svg id="cartoonCake" class="cake-svg" viewBox="0 0 320 220" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Cute interactive cartoon cake">
+            <defs>
+              <linearGradient id="plateGrad" x1="0" x2="0" y1="0" y2="1">
+                <stop offset="0" stop-color="#fff6fb"/>
+                <stop offset="1" stop-color="#ffeef8"/>
+              </linearGradient>
+              <linearGradient id="tierGrad" x1="0" x2="0" y1="0" y2="1">
+                <stop offset="0" stop-color="#ffeff8"/>
+                <stop offset="1" stop-color="#ffd7ea"/>
+              </linearGradient>
+              <linearGradient id="icingGrad" x1="0" x2="0" y1="0" y2="1">
+                <stop offset="0" stop-color="#fff7ff"/>
+                <stop offset="1" stop-color="#ffeef8"/>
+              </linearGradient>
+              <filter id="softShadow" x="-50%" y="-50%" width="200%" height="200%">
+                <feDropShadow dx="0" dy="8" stdDeviation="14" flood-color="#000" flood-opacity="0.08"/>
+              </filter>
+            </defs>
+
+            <!-- Plate -->
+            <ellipse cx="160" cy="200" rx="110" ry="12" fill="url(#plateGrad)" opacity="0.95"/>
+
+            <!-- Bottom tier -->
+            <g filter="url(#softShadow)">
+              <rect x="30" y="110" rx="16" ry="16" width="260" height="64" fill="url(#tierGrad)" stroke="#f4b6d4" stroke-width="3"/>
             </g>
 
-            <g transform="translate(90,125)">
-              <circle cx="12" cy="12" r="3" fill="#6b2350"/>
-              <circle cx="68" cy="12" r="3" fill="#6b2350"/>
-              <path d="M20 28 q30 18 48 0" stroke="#6b2350" stroke-width="2.5" fill="none" stroke-linecap="round"/>
+            <!-- Icing drips -->
+            <path d="M30 110c18-26 48-16 95-16s77-10 95 16v6H30z" fill="url(#icingGrad)"/>
+
+            <!-- Middle decorative band -->
+            <rect x="60" y="78" rx="12" ry="12" width="200" height="44" fill="#ffedf7" stroke="#f4b6d4" stroke-width="2"/>
+
+            <!-- Top icing -->
+            <path d="M60 78c12-18 36-12 80-12s68-6 92 12v4H60z" fill="#fff8ff"/>
+
+            <!-- Sprinkles (varied) -->
+            <g id="sprinkles" transform="translate(60,80)" fill="#ff7fbf">
+              <rect x="20" y="10" width="6" height="12" rx="3" transform="rotate(-14 23 16)"/>
+              <rect x="60" y="18" width="6" height="12" rx="3" transform="rotate(10 63 24)" fill="#ffd16e"/>
+              <rect x="100" y="8" width="6" height="12" rx="3" transform="rotate(-6 103 14)" fill="#cbb0ff"/>
+              <rect x="140" y="16" width="6" height="12" rx="3" transform="rotate(18 143 22)" fill="#8be6c8"/>
+            </g>
+
+            <!-- Candle base -->
+            <rect x="155" y="18" rx="3" width="12" height="60" fill="#6f42c1"/>
+
+            <!-- Candle stripes -->
+            <g fill="#f0c6ff" opacity="0.8">
+              <rect x="155" y="26" width="12" height="6" />
+              <rect x="155" y="40" width="12" height="6" />
+              <rect x="155" y="54" width="12" height="6" />
+            </g>
+
+            <!-- Flame group: clickable -->
+            <g id="flameGroup" class="flame" role="button" tabindex="0" aria-label="Blow out the candle">
+              <!-- animated flame core -->
+              <path id="flameMain" class="flame-main" d="M161 16c5 -8 10 -8 10 -14 0 -9 -6 -9 -10 -9s-10 0-10 9c0 6 5 6 10 14z" fill="#ffb84d"/>
+              <path id="flameInner" class="flame-inner" d="M161 12c3 -5 6 -5 6 -9 0 -5 -3 -5 -6 -5s-6 0-6 5c0 4 3 4 6 9z" fill="#fff2c9" opacity="0.9"/>
+              <circle cx="174" cy="2" r="2" fill="#fff6c8" opacity="0.9"/>
+            </g>
+
+            <!-- Smoke (hidden until extinguish) -->
+            <g id="smoke" class="smoke" transform="translate(160,6)" opacity="0">
+              <path d="M0 0 q-6 -6 -2 -12 q6 -6 10 -6 q4 0 6 6 q2 6 -4 12 q-6 6 -10 0z" fill="#e6e6e6" opacity="0.9"/>
+              <path d="M12 -6 q6 -6 10 -6 q4 0 6 6 q2 6 -4 12 q-6 6 -12 0z" fill="#efefef" opacity="0.8"/>
+            </g>
+
+            <!-- Cute face -->
+            <g transform="translate(100,130)">
+              <circle cx="15" cy="12" r="3" fill="#6b2350"/>
+              <circle cx="85" cy="12" r="3" fill="#6b2350"/>
+              <path d="M28 30 q30 18 46 0" stroke="#6b2350" stroke-width="2.4" fill="none" stroke-linecap="round"/>
             </g>
           </svg>
         </div>
@@ -133,7 +184,6 @@
         <h2 class="section-title">Flowers</h2>
         <p class="section-sub">Some pretty flowers for you.</p>
 
-        <!-- collapsible: on small screens this section will start collapsed -->
         <div class="collapsible" data-collapsed>
           <button class="collapsible-toggle" aria-expanded="true">Show flowers</button>
           <div class="collapsible-content">
@@ -186,10 +236,6 @@
       </div>
     </section>
   </main>
-
-  <footer class="footer">
-    <small>Made with ❤️ — Happy Birthday</small>
-  </footer>
 
   <script src="script.js" defer></script>
 </body>
