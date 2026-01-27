@@ -1,4 +1,4 @@
-// Main interactions for the birthday site
+// Main interactions for the birthday site (updated modal implementation)
 
 document.addEventListener('DOMContentLoaded', ()=>{
 
@@ -13,7 +13,7 @@ document.addEventListener('DOMContentLoaded', ()=>{
   function showPage(id){
     pages.forEach(p=> p.id===id ? p.classList.add('active') : p.classList.remove('active'));
     navItems.forEach(n=> n.classList.toggle('active', n.dataset.target===id));
-    // special: stop video if switching
+    // special: stop any active modal/video if switching
     closeVideo();
   }
 
@@ -102,56 +102,118 @@ document.addEventListener('DOMContentLoaded', ()=>{
   });
   observer.observe(document.querySelector('main'), {attributes:true, subtree:true, attributeFilter:['class']});
 
-  // Playlist: clicking list items opens video overlay
+  // Playlist: clicking list items opens a top-level modal appended to body
   const playlistItems = document.querySelectorAll('.playlist li');
-  const videoScreen = document.getElementById('videoScreen');
-  const videoFrame = document.getElementById('videoFrame');
-  const closeVideoBtn = document.getElementById('closeVideo');
+
+  // We'll keep a reference to the dynamic modal so we can close it
+  let videoModal = null;
+  function buildModal(url){
+    // Remove existing if any
+    closeVideo();
+
+    // Create modal root
+    videoModal = document.createElement('div');
+    videoModal.className = 'video-modal';
+    videoModal.setAttribute('role','dialog');
+    videoModal.setAttribute('aria-modal','true');
+
+    // create close button (root-level so it always receives clicks above iframe)
+    const closeBtn = document.createElement('button');
+    closeBtn.className = 'video-modal__close';
+    closeBtn.type = 'button';
+    closeBtn.title = 'Close';
+    closeBtn.innerHTML = '✕';
+    closeBtn.addEventListener('click', closeVideo);
+
+    // create frame wrapper and iframe
+    const frameWrap = document.createElement('div');
+    frameWrap.className = 'video-modal__frame';
+    const iframe = document.createElement('iframe');
+    iframe.setAttribute('src', url + '?autoplay=1&rel=0');
+    iframe.setAttribute('allow','autoplay; encrypted-media; picture-in-picture');
+    iframe.setAttribute('allowfullscreen','');
+    iframe.setAttribute('title','Video player');
+    frameWrap.appendChild(iframe);
+
+    // Append to body: first modal, then close button (close button is fixed and above)
+    document.body.appendChild(videoModal);
+    videoModal.appendChild(frameWrap);
+    document.body.appendChild(closeBtn);
+
+    // prevent background scroll
+    document.documentElement.style.overflow = 'hidden';
+    document.body.style.overflow = 'hidden';
+
+    // Close when clicking on background (but not when clicking on the frame)
+    videoModal.addEventListener('click', (e) => {
+      if (e.target === videoModal) closeVideo();
+    });
+
+    // Close with Escape
+    document.addEventListener('keydown', escHandler);
+
+    // Focus close for accessibility
+    closeBtn.focus();
+
+    // Save references for cleanup
+    videoModal._iframe = iframe;
+    videoModal._closeBtn = closeBtn;
+  }
 
   function openVideo(url){
-    if (!videoScreen || !videoFrame) return;
-    videoFrame.src = url + "?autoplay=1&rel=0";
-    videoScreen.classList.remove('hidden');
-    videoScreen.setAttribute('aria-hidden','false');
-    // focus close button for accessibility
-    if (closeVideoBtn) closeVideoBtn.focus();
+    if (!url) return;
+    buildModal(url);
   }
+
+  function escHandler(e){
+    if (e.key === 'Escape') closeVideo();
+  }
+
   function closeVideo(){
-    if (!videoScreen || !videoFrame) return;
-    videoScreen.classList.add('hidden');
-    videoFrame.src = '';
-    videoScreen.setAttribute('aria-hidden','true');
+    // remove modal and its controls if present
+    if (videoModal) {
+      // remove frame wrapper and modal
+      if (videoModal._iframe) {
+        // stop playback by clearing src
+        videoModal._iframe.src = '';
+      }
+      // remove modal element
+      if (videoModal.parentNode) videoModal.parentNode.removeChild(videoModal);
+      // remove close button if appended
+      if (videoModal._closeBtn && videoModal._closeBtn.parentNode) {
+        videoModal._closeBtn.parentNode.removeChild(videoModal._closeBtn);
+      } else {
+        // fallback: remove any .video-modal__close present
+        const cb = document.querySelector('.video-modal__close');
+        if (cb && cb.parentNode) cb.parentNode.removeChild(cb);
+      }
+      videoModal = null;
+    }
+    // restore scroll
+    document.documentElement.style.overflow = '';
+    document.body.style.overflow = '';
+    // remove esc listener
+    document.removeEventListener('keydown', escHandler);
   }
 
   playlistItems.forEach(li=>{
     li.addEventListener('click', ()=> openVideo(li.dataset.youtube));
   });
 
-  // Attach listener only if button exists
-  if (closeVideoBtn) {
-    closeVideoBtn.addEventListener('click', closeVideo);
+  // Also ensure any other pre-existing static videoScreen is closed
+  // (in case old markup exists)
+  const preExistingClose = document.getElementById('closeVideo');
+  if (preExistingClose) {
+    preExistingClose.addEventListener('click', closeVideo);
   }
-
-  // Close video on background click
-  if (videoScreen) {
-    videoScreen.addEventListener('click', (e)=>{
-      // click on overlay background (not the iframe or button)
-      if (e.target === videoScreen) closeVideo();
-    });
-  }
-
-  // Close on ESC key
-  document.addEventListener('keydown', (e)=>{
-    if (e.key === 'Escape') closeVideo();
-  });
 
   // Confetti implementation (lightweight)
   const confettiCanvas = document.getElementById('confetti');
-  const ctx = confettiCanvas.getContext('2d');
+  const ctx = confettiCanvas ? confettiCanvas.getContext('2d') : null;
   let confettiPieces = [];
   let confettiRunning = false;
 
-  function resizeCanvas(){ confettiCanvas.width = window.innerWidth; confettiCanvas.height = window.innerHeight; }
+  function resizeCanvas(){ if (!confettiCanvas) return; confettiCanvas.width = window.innerWidth; confettiCanvas.height = window.innerHeight; }
   window.addEventListener('resize', resizeCanvas);
   resizeCanvas();
 
@@ -176,6 +238,7 @@ document.addEventListener('DOMContentLoaded', ()=>{
   }
 
   function drawConfetti(){
+    if (!ctx) return;
     ctx.clearRect(0,0,confettiCanvas.width, confettiCanvas.height);
     confettiPieces.forEach(p=>{
       ctx.save();
@@ -203,16 +266,14 @@ document.addEventListener('DOMContentLoaded', ()=>{
   }
 
   function startConfetti(){
-    if (confettiRunning) return;
+    if (!ctx || confettiRunning) return;
     createConfetti();
     confettiRunning = true;
     animateConfetti();
-    setTimeout(()=> {
-      stopConfetti();
-    }, 8000);
+    setTimeout(()=> { stopConfetti(); }, 8000);
   }
   function stopConfetti(){
-    if (!confettiRunning) return;
+    if (!ctx || !confettiRunning) return;
     confettiRunning = false;
     cancelAnimationFrame(confettiTimer);
     confettiTimer = null;
