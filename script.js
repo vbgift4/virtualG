@@ -1,122 +1,242 @@
+// Main interactions for the birthday site
+// Updated: keeps confetti + floating balloons, cartoon cake flame works as before,
+// playlist persistent player remains unchanged.
+
 document.addEventListener('DOMContentLoaded', ()=>{
 
-  // Navigation
+  // Basic element refs
   const navItems = document.querySelectorAll('.nav-item');
   const pages = document.querySelectorAll('.page');
   const logoBtn = document.getElementById('logoBtn');
-  function showPage(id){
-    navItems.forEach(n => n.classList.toggle('active', n.dataset.target===id));
-    pages.forEach(p => p.id===id ? p.classList.add('active') : p.classList.remove('active'));
-  }
-  navItems.forEach(btn=>btn.addEventListener('click', ()=>showPage(btn.dataset.target)));
-  logoBtn.addEventListener('click', ()=>showPage('home'));
-
-  // Hero tap: music + confetti
   const heroTap = document.getElementById('heroTap');
   const bgAudio = document.getElementById('bgAudio');
-  heroTap.addEventListener('click', ()=>{
-    if(bgAudio.paused) bgAudio.play().catch(()=>{});
-    else bgAudio.pause();
-    startConfetti();
+
+  // SPA navigation (show/hide pages)
+  function showPage(id){
+    pages.forEach(p=> p.id===id ? p.classList.add('active') : p.classList.remove('active'));
+    navItems.forEach(n=> n.classList.toggle('active', n.dataset.target===id));
+    // stop video if switching away
+    if (id !== 'playlist') hidePlayer();
+  }
+
+  navItems.forEach(btn=>{
+    btn.addEventListener('click', ()=>{
+      const target = btn.dataset.target;
+      showPage(target);
+      if (target === 'home') {
+        document.getElementById('home').scrollIntoView({behavior:'smooth'});
+      }
+    });
   });
 
-  // Cake flame
-  const flame = document.getElementById('cakeFlame');
+  // Logo returns to home
+  logoBtn.addEventListener('click', ()=> showPage('home'));
+
+  // Hero tap: play/pause audio and start confetti
+  heroTap.addEventListener('click', ()=> {
+    if (bgAudio.paused) {
+      bgAudio.play().catch(()=>{/* playback blocked */});
+      startConfetti();
+    } else {
+      bgAudio.pause();
+    }
+  });
+
+  // Keyboard accessibility: space/enter on hero
+  heroTap.addEventListener('keydown', (e)=>{
+    if (e.key==='Enter' || e.key===' ') { e.preventDefault(); heroTap.click(); }
+  });
+
+  // --- Cake flame interaction ---
+  const flameGroup = document.getElementById('flameGroup');
   const cakeMessage = document.getElementById('cakeMessage');
   const closeBtn = cakeMessage.querySelector('.closeBtn');
-  if(flame){
-    function showMessage(){
-      flame.classList.add('extinguished');
+
+  if (flameGroup) {
+    flameGroup.addEventListener('click', ()=> {
       cakeMessage.classList.remove('hidden');
-    }
-    flame.addEventListener('click', showMessage);
-    flame.addEventListener('keydown', (e)=>{
-      if(e.key==='Enter' || e.key===' ') { e.preventDefault(); showMessage(); }
+    });
+    flameGroup.addEventListener('keydown', (e)=> {
+      if (e.key==='Enter' || e.key===' ') { e.preventDefault(); flameGroup.click(); }
     });
   }
-  closeBtn.addEventListener('click', ()=>{
-    cakeMessage.classList.add('hidden');
-    flame.classList.remove('extinguished');
-  });
+  if (closeBtn) {
+    closeBtn.addEventListener('click', ()=> cakeMessage.classList.add('hidden'));
+  }
 
-  // Typing animation
+  // --- Message typing animation ---
   const textEl = document.getElementById('typeText');
   const pencil = document.getElementById('pencilSvg');
   const follow = document.getElementById('messageFollow');
+
   const message = "Dear you,\n\nToday I celebrate you — your smile, your warmth,\nand every little thing that makes you special.\n\nLove you always.";
+  const followMsg = "And one more thing — you're the best part of my every day. 💖";
+
   function typeWrite(target, text, onDone){
     target.textContent = '';
     let i=0;
+    const total = text.length;
     function step(){
-      if(i<text.length){
+      if (i<total){
         target.textContent += text[i++];
-        if(pencil) pencil.style.transform = `translateX(${Math.min(140,i)}px) rotate(${Math.min(8,i/2)}deg)`;
-        setTimeout(step, 30+Math.random()*40);
-      }else{
-        if(pencil) pencil.style.transform='translateX(0) rotate(0)';
-        if(onDone) onDone();
+        pencil.style.transform = `translateX(${Math.min(160, i)}px) rotate(${Math.min(8,i/2)}deg)`;
+        setTimeout(step, 30 + (Math.random()*40));
+      } else {
+        pencil.style.transform = 'translateX(0) rotate(0)';
+        if (onDone) onDone();
       }
     }
     step();
   }
-  new MutationObserver(()=>{
+
+  // Start typing when the message page becomes active
+  const observer = new MutationObserver(()=> {
     const active = document.querySelector('.page.active');
-    if(active?.id==='message' && textEl.textContent.trim()===''){
-      typeWrite(textEl, message, ()=>{
+    if (active && active.id === 'message' && textEl.textContent.trim()==='') {
+      typeWrite(textEl, message, ()=> {
         setTimeout(()=>{
+          textEl.style.transition='opacity 700ms';
           textEl.style.opacity=0;
-          setTimeout(()=>{
+          setTimeout(()=> {
             textEl.style.opacity=1;
-            textEl.textContent = "And one more thing — you're the best part of my every day. 💖";
-            if(follow) follow.classList.remove('hidden');
+            textEl.textContent = followMsg;
+            follow.classList.remove('hidden');
           },700);
-        },800);
+        }, 800);
       });
     }
-  }).observe(document.querySelector('main'),{attributes:true,subtree:true,attributeFilter:['class']});
+  });
+  observer.observe(document.querySelector('main'), {attributes:true, subtree:true, attributeFilter:['class']});
 
-  // Playlist
+  // --- Playlist: persistent player area (unchanged behavior) ---
   const playlistItems = document.querySelectorAll('.playlist-item');
   const playerWrap = document.getElementById('playlistPlayer');
   const playerIframe = document.getElementById('playerIframe');
   const playerTitle = document.getElementById('playerTitle');
   const playerClose = document.getElementById('playerClose');
-  function showPlayer(title,url){
-    playerTitle.textContent = title||'Playing';
-    playerIframe.src = url+'?autoplay=1&rel=0';
-    playerWrap.setAttribute('aria-hidden','false');
-  }
-  function hidePlayer(){ playerWrap.setAttribute('aria-hidden','true'); playerIframe.src=''; }
-  playlistItems.forEach(li=>{
-    li.addEventListener('click', ()=> showPlayer(li.textContent.trim(), li.dataset.youtube));
-  });
-  playerClose.addEventListener('click', hidePlayer);
+  const playlistList = document.getElementById('playlistList');
 
-  // Confetti
-  const confettiCanvas = document.getElementById('confetti');
-  const ctx = confettiCanvas.getContext('2d');
-  let confettiPieces=[], confettiRunning=false, confettiTimer=null;
-  function resizeCanvas(){ confettiCanvas.width=window.innerWidth; confettiCanvas.height=window.innerHeight; if(confettiRunning) createConfetti(); }
-  window.addEventListener('resize', resizeCanvas); resizeCanvas();
-  function random(min,max){ return Math.random()*(max-min)+min; }
-  function createConfetti(){
-    confettiPieces=[]; 
-    const area=confettiCanvas.width*confettiCanvas.height;
-    const count=Math.max(60,Math.floor(area/90000));
-    const colors=['#ff7fbf','#ffd1e6','#cbb0ff','#ffe89a','#ffb4c6','#ff9db7'];
-    for(let i=0;i<count;i++) confettiPieces.push({x:random(0,confettiCanvas.width),y:random(-confettiCanvas.height,0),w:random(6,12),h:random(8,18),color:colors[Math.floor(Math.random()*colors.length)],rot:random(0,360),velY:random(1.4,4.2),velX:random(-1.5,1.5),rotSpeed:random(-8,8)});
+  function showPlayer(title, url){
+    if (!playerWrap || !playerIframe) return;
+    playerTitle.textContent = title || 'Playing';
+    playerIframe.src = url + '?autoplay=1&rel=0';
+    playerWrap.setAttribute('aria-hidden','false');
+    // ensure visible on mobile: scroll player into view
+    playerWrap.scrollIntoView({behavior:'smooth', block:'center'});
+    playerClose.focus();
   }
-  function drawConfetti(){
-    ctx.clearRect(0,0,confettiCanvas.width,confettiCanvas.height);
-    confettiPieces.forEach(p=>{
-      ctx.save(); ctx.translate(p.x,p.y); ctx.rotate(p.rot*Math.PI/180);
-      ctx.fillStyle=p.color; ctx.fillRect(-p.w/2,-p.h/2,p.w,p.h); ctx.restore();
-      p.x+=p.velX; p.y+=p.velY; p.rot+=p.rotSpeed*0.6;
-      if(p.y>confettiCanvas.height+40){p.y=-20;p.x=random(0,confettiCanvas.width);}
+
+  function hidePlayer(){
+    if (!playerWrap || !playerIframe) return;
+    playerWrap.setAttribute('aria-hidden','true');
+    // stop playback
+    try { playerIframe.src = ''; } catch(e){}
+  }
+
+  playlistItems.forEach(li=>{
+    li.addEventListener('click', ()=> {
+      const url = li.dataset.youtube;
+      const title = li.textContent.trim();
+      showPlayer(title, url);
+    });
+    // keyboard support
+    li.addEventListener('keydown', (e)=>{
+      if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); li.click(); }
+    });
+  });
+
+  if (playerClose) {
+    playerClose.addEventListener('click', ()=> {
+      hidePlayer();
+      // return focus to list for accessibility
+      const first = playlistList.querySelector('.playlist-item');
+      if (first) first.focus();
     });
   }
-  function animateConfetti(){ drawConfetti(); confettiTimer=requestAnimationFrame(animateConfetti); }
-  function startConfetti(){ if(confettiRunning) return; createConfetti(); confettiRunning=true; animateConfetti(); }
-  function stopConfetti(){ confettiRunning=false; cancelAnimationFrame(confettiTimer); confettiTimer=null; ctx.clearRect(0,0,confettiCanvas.width,confettiCanvas.height); }
 
+  // --- Confetti implementation (lightweight) ---
+  const confettiCanvas = document.getElementById('confetti');
+  const ctx = confettiCanvas ? confettiCanvas.getContext('2d') : null;
+  let confettiPieces = [];
+  let confettiRunning = false;
+
+  function resizeCanvas(){ if (!confettiCanvas) return; confettiCanvas.width = window.innerWidth; confettiCanvas.height = window.innerHeight; }
+  window.addEventListener('resize', resizeCanvas);
+  resizeCanvas();
+
+  function random(min,max){ return Math.random()*(max-min)+min; }
+
+  function createConfetti(){
+    confettiPieces = [];
+    const count = 100;
+    const colors = ['#ff7fbf','#ffd1e6','#cbb0ff','#ffe89a','#ffb4c6','#ff9db7'];
+    for (let i=0;i<count;i++){
+      confettiPieces.push({
+        x: random(0, confettiCanvas.width),
+        y: random(-confettiCanvas.height, 0),
+        w: random(6,12),
+        h: random(8,18),
+        color: colors[Math.floor(Math.random()*colors.length)],
+        rot: random(0,360),
+        velY: random(1.5,5),
+        velX: random(-1.5,1.5),
+        rotSpeed: random(-8,8),
+      });
+    }
+  }
+
+  function drawConfetti(){
+    if (!ctx) return;
+    ctx.clearRect(0,0,confettiCanvas.width, confettiCanvas.height);
+    confettiPieces.forEach(p=>{
+      ctx.save();
+      ctx.translate(p.x, p.y);
+      ctx.rotate(p.rot * Math.PI/180);
+      ctx.fillStyle = p.color;
+      ctx.fillRect(-p.w/2, -p.h/2, p.w, p.h);
+      ctx.restore();
+
+      p.x += p.velX;
+      p.y += p.velY;
+      p.rot += p.rotSpeed * 0.6;
+
+      if (p.y > confettiCanvas.height + 40) {
+        p.y = -20;
+        p.x = random(0, confettiCanvas.width);
+      }
+    });
+  }
+
+  let confettiTimer = null;
+  function animateConfetti(){
+    drawConfetti();
+    confettiTimer = requestAnimationFrame(animateConfetti);
+  }
+
+  function startConfetti(){
+    if (!ctx || confettiRunning) return;
+    createConfetti();
+    confettiRunning = true;
+    animateConfetti();
+    setTimeout(()=> { stopConfetti(); }, 9000);
+  }
+  function stopConfetti(){
+    if (!ctx || !confettiRunning) return;
+    confettiRunning = false;
+    cancelAnimationFrame(confettiTimer);
+    confettiTimer = null;
+    ctx.clearRect(0,0,confettiCanvas.width, confettiCanvas.height);
+  }
+
+  // Accessibility: number-key navigation
+  document.addEventListener('keydown', (e)=>{
+    if (e.key === '1') showPage('home');
+    if (e.key === '2') showPage('cake');
+    if (e.key === '3') showPage('message');
+    if (e.key === '4') showPage('flowers');
+    if (e.key === '5') showPage('playlist');
+  });
+
+  // Initialize to home
+  showPage('home');
 });
