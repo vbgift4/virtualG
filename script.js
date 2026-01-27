@@ -70,18 +70,38 @@ document.addEventListener('DOMContentLoaded', ()=>{
   });
   logoBtn.addEventListener('click', ()=> showPage('home'));
 
-  /* -------------------------
-     Hero tap: audio + confetti
-     ------------------------- */
-  heroTap.addEventListener('click', ()=> {
-    if (bgAudio.paused) bgAudio.play().catch(()=>{});
-    else bgAudio.pause();
-    const home = document.getElementById('home');
-    if (home && home.classList.contains('active')) startConfetti();
-  });
-  heroTap.addEventListener('keydown', (e)=>{
-    if (e.key==='Enter' || e.key===' ') { e.preventDefault(); heroTap.click(); }
-  });
+ /* -------------------------
+   Hero tap: audio + confetti (desktop + mobile friendly)
+   ------------------------- */
+function playHeroAudio() {
+  if (bgAudio.paused) {
+    bgAudio.play().then(() => {
+      console.log('Audio started');
+    }).catch(err => {
+      console.warn('Audio play blocked:', err);
+    });
+  }
+}
+
+heroTap.addEventListener('click', () => {
+  playHeroAudio();
+
+  const home = document.getElementById('home');
+  if (home && home.classList.contains('active')) startConfetti();
+});
+
+heroTap.addEventListener('keydown', (e) => {
+  if (e.key === 'Enter' || e.key === ' ') {
+    e.preventDefault();
+    heroTap.click();
+  }
+});
+
+// Mobile: first touch ensures audio plays
+heroTap.addEventListener('touchstart', () => {
+  playHeroAudio();
+}, { once: true });
+
 
   /* -------------------------
      Cake flame popup
