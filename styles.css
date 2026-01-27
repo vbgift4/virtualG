@@ -1,0 +1,145 @@
+:root{
+  --bg:#ffdff0;
+  --pink:#ffd1e6;
+  --accent:#f5a8cf;
+  --violet:#cbb0ff;
+  --text:#333;
+}
+*{box-sizing:border-box}
+html,body{height:100%}
+body{
+  margin:0;
+  font-family:system-ui,-apple-system,"Segoe UI",Roboto,"Helvetica Neue",Arial;
+  background:linear-gradient(180deg,var(--bg),#fff);
+  color:var(--text);
+  -webkit-font-smoothing:antialiased;
+  -moz-osx-font-smoothing:grayscale;
+  display:flex;
+  flex-direction:column;
+  min-height:100vh;
+}
+
+/* NAV */
+.nav{
+  position:sticky;
+  top:0;
+  z-index:40;
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  padding:8px 12px;
+  background:rgba(255,255,255,0.6);
+  backdrop-filter: blur(6px);
+  border-bottom:1px solid rgba(0,0,0,0.04);
+}
+.logo{
+  border:0;
+  background:transparent;
+  font-weight:700;
+  color:#b63386;
+  font-size:1.1rem;
+  padding:6px 10px;
+  border-radius:8px;
+  cursor:pointer;
+}
+.logo:focus{outline:2px solid rgba(0,0,0,0.08)}
+.nav-right{display:flex;gap:6px;align-items:center}
+.nav-item{
+  display:flex;
+  gap:6px;
+  align-items:center;
+  border:0;
+  background:transparent;
+  padding:8px 10px;
+  border-radius:8px;
+  color:#6b2350;
+  cursor:pointer;
+  transition:background .18s, color .18s;
+}
+.nav-item:focus{outline:2px solid rgba(0,0,0,0.06)}
+.nav-item:hover{background:rgba(255,255,255,0.6)}
+.icon{width:18px;height:18px;display:block;fill:currentColor}
+
+/* MAIN PAGES */
+main{flex:1}
+.page{display:none;padding:20px;max-width:1000px;margin:18px auto}
+.page.active{display:block}
+.section-inner{background:rgba(255,255,255,0.85);padding:18px;border-radius:14px;box-shadow:0 6px 18px rgba(0,0,0,0.06)}
+.title{font-size:2.4rem;margin:10px 0 6px;text-align:center}
+.sub{font-size:1.05rem;margin:0 0 12px;text-align:center;color:#6b2350}
+.hero{
+  position:relative;
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  justify-content:center;
+  gap:8px;
+  background:linear-gradient(180deg, rgba(255,235,245,0.6), rgba(255,240,245,0.4));
+  padding:36px 16px;
+  border-radius:12px;
+  cursor:pointer;
+  user-select:none;
+  min-height:320px;
+}
+.balloons{width:170px;max-width:40%;border-radius:12px;box-shadow:0 8px 18px rgba(0,0,0,0.08)}
+.hint{font-size:.9rem;color:#b04a80}
+
+/* CONFETTI CANVAS */
+#confetti{
+  position:fixed;
+  left:0;top:0;pointer-events:none;
+  width:100%;height:100%;
+  z-index:10;
+}
+
+/* CAKE */
+.cake-wrap{display:flex;justify-content:center;padding:18px}
+.cake-svg{width:260px;height:auto}
+.flame{cursor:pointer}
+.flame:focus{outline:2px solid rgba(0,0,0,0.06)}
+.popup{position:fixed;left:0;right:0;top:0;bottom:0;display:flex;align-items:center;justify-content:center;z-index:60}
+.popup-inner{background:white;padding:18px;border-radius:12px;box-shadow:0 20px 40px rgba(0,0,0,0.2)}
+.hidden{display:none}
+.closeBtn{margin-top:12px;background:var(--accent);border:0;padding:8px 12px;border-radius:8px;color:white;cursor:pointer}
+
+/* Message */
+.paper{position:relative;background:#fffef8;border-radius:8px;padding:20px;min-height:160px;box-shadow:0 8px 20px rgba(0,0,0,0.05);overflow:hidden}
+.written{white-space:pre-wrap;font-family:"Segoe UI",Roboto,serif;font-size:1.05rem;line-height:1.45;color:#5b3b4a;min-height:96px}
+.pencil{width:60px;height:60px;position:absolute;right:8px;bottom:8px;transform-origin:center;opacity:0.95;transition:transform .2s}
+
+/* follow-up message */
+.follow{margin-top:12px;background:linear-gradient(90deg,#fff #f9f4ff);padding:12px;border-radius:8px;box-shadow:inset 0 1px 0 rgba(255,255,255,0.6)}
+
+/* Flowers */
+.flower-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-top:12px}
+.flower-grid img{width:100%;height:140px;object-fit:cover;border-radius:10px;box-shadow:0 6px 14px rgba(0,0,0,0.06)}
+
+/* Playlist */
+.playlist{list-style:none;padding:0;margin:12px 0}
+.playlist li{padding:12px;border-radius:8px;background:rgba(255,255,255,0.85);margin-bottom:8px;cursor:pointer;box-shadow:0 6px 12px rgba(0,0,0,0.04)}
+.playlist li:hover{background:var(--pink)}
+.video-screen{position:fixed;left:0;right:0;top:0;bottom:0;display:flex;align-items:center;justify-content:center;background:rgba(0,0,0,0.6);z-index:70}
+.video-screen iframe{width:min(900px,95%);height:min(560px,66%);border-radius:10px}
+.closeVideo{position:absolute;top:8px;right:12px;background:transparent;border:0;color:white;font-size:22px}
+
+/* Footer */
+.footer{text-align:center;padding:12px 6px;color:#7a4a61;font-size:.95rem}
+
+/* ACTIVE STATE for cake button: violet */
+.nav-item[data-target="cake"].active, .nav-item[data-target="cake"]:active{
+  background:linear-gradient(90deg,var(--violet),#b59ef9);
+  color:white;
+}
+
+/* Responsive */
+@media (max-width:900px){
+  .flower-grid{grid-template-columns:repeat(2,1fr)}
+  .nav-right{gap:4px}
+  .nav-item span{display:none}
+  .logo-text{font-size:1rem}
+}
+@media (max-width:520px){
+  .flower-grid{grid-template-columns:1fr;grid-auto-rows:150px}
+  .balloons{max-width:60%}
+  .title{font-size:1.6rem}
+}
