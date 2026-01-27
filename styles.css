@@ -114,57 +114,52 @@ main{flex:1}
 .flower-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-top:12px}
 .flower-grid img{width:100%;height:140px;object-fit:cover;border-radius:10px;box-shadow:0 6px 14px rgba(0,0,0,0.06)}
 
-/* Playlist items */
-.playlist{list-style:none;padding:0;margin:12px 0}
-.playlist li{padding:12px;border-radius:8px;background:rgba(255,255,255,0.85);margin-bottom:8px;cursor:pointer;box-shadow:0 6px 12px rgba(0,0,0,0.04)}
-.playlist li:hover{background:var(--pink)}
+/* Playlist layout */
+.playlist-wrap{margin-top:12px}
+.playlist-grid{
+  display:flex;
+  gap:14px;
+  align-items:flex-start;
+}
+/* Left: list */
+.playlist-list{flex:1;min-width:220px}
+.playlist{list-style:none;padding:0;margin:0}
+.playlist-item{
+  padding:12px;border-radius:8px;background:rgba(255,255,255,0.95);margin-bottom:10px;cursor:pointer;box-shadow:0 6px 12px rgba(0,0,0,0.04);
+  transition:transform .12s, background .12s;
+}
+.playlist-item:hover, .playlist-item:focus{transform:translateY(-3px);background:var(--pink);outline:none}
+.playlist-item:active{transform:translateY(0)}
 
-/* --- Dynamic top-level modal for video (appended to <body>) --- */
-.video-modal{
-  position:fixed;
-  inset:0;
+/* Right: player */
+.playlist-player{
+  width:460px;
+  max-width:46%;
+  min-width:320px;
+  background:rgba(255,255,255,0.95);
+  border-radius:10px;
+  box-shadow:0 20px 40px rgba(0,0,0,0.08);
+  overflow:hidden;
+  display:flex;
+  flex-direction:column;
+  position:relative;
+  transition:opacity .18s, transform .18s;
+}
+.playlist-player[aria-hidden="true"]{opacity:0.0;pointer-events:none;transform:translateY(-6px)}
+.playlist-player[aria-hidden="false"]{opacity:1;pointer-events:auto;transform:translateY(0)}
+.player-header{
   display:flex;
   align-items:center;
-  justify-content:center;
-  background:rgba(0,0,0,0.6);
-  z-index:99999;
-  -webkit-overflow-scrolling:touch;
+  justify-content:space-between;
+  padding:10px 12px;
+  border-bottom:1px solid rgba(0,0,0,0.04);
+  background:linear-gradient(90deg,#fff,#fff8ff);
 }
-.video-modal__frame{
-  width:min(900px,95%);
-  height:min(560px,66%);
-  border-radius:10px;
-  overflow:hidden;
-  background:#000;
-  box-shadow:0 30px 80px rgba(0,0,0,0.6);
+.player-close{
+  background:transparent;border:0;font-size:20px;padding:6px;cursor:pointer;color:#6b2350;border-radius:8px;
 }
-.video-modal__frame iframe{
-  width:100%;
-  height:100%;
-  border:0;
-  display:block;
-}
-
-/* Close button placed at root level inside modal so it always receives clicks */
-.video-modal__close{
-  position:fixed;
-  top:12px;
-  right:12px;
-  background:rgba(0,0,0,0.6);
-  color:white;
-  border:0;
-  font-size:20px;
-  width:44px;
-  height:44px;
-  border-radius:999px;
-  display:inline-flex;
-  align-items:center;
-  justify-content:center;
-  cursor:pointer;
-  z-index:100000; /* highest */
-  box-shadow:0 6px 14px rgba(0,0,0,0.35);
-}
-.video-modal__close:focus{outline:3px solid rgba(255,255,255,0.12)}
+.player-frame{width:100%;height:0;padding-bottom:56.25%;position:relative}
+.player-frame iframe{position:absolute;left:0;top:0;width:100%;height:100%;border:0;border-radius:0;display:block;background:#000}
 
 /* Footer */
 .footer{text-align:center;padding:12px 6px;color:#7a4a61;font-size:.95rem}
@@ -175,13 +170,15 @@ main{flex:1}
   color:white;
 }
 
-/* Responsive */
+/* Responsive: mobile */
 @media (max-width:900px){
   .flower-grid{grid-template-columns:repeat(2,1fr)}
   .nav-right{gap:4px}
   .nav-item span{display:none}
   .logo-text{font-size:1rem}
-  .video-modal__close{width:40px;height:40px;font-size:18px;top:8px;right:8px}
+  .playlist-grid{flex-direction:column}
+  .playlist-player{width:100%;max-width:100%;min-width:0}
+  .player-frame{padding-bottom:56.25%}
 }
 @media (max-width:520px){
   .flower-grid{grid-template-columns:1fr;grid-auto-rows:150px}
