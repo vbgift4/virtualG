@@ -44,7 +44,6 @@
       <canvas id="confetti"></canvas>
 
       <div class="hero" id="heroTap" role="button" tabindex="0" aria-label="Play birthday music. Tap to play.">
-        <!-- Floating CSS balloons (decorative) -->
         <div class="balloon-container" aria-hidden="true">
           <div class="balloon b1"></div>
           <div class="balloon b2"></div>
@@ -56,7 +55,7 @@
         <h1 class="title">HAPPY BIRTHDAY!</h1>
         <p class="sub">Hope today makes you smile a little more than usual.</p>
 
-        <!-- decorative GIF (keeps charm) -->
+        <!-- decorative GIF (non-lazy so it appears quickly on home) -->
         <img src="assets/balloons.gif" alt="" class="balloons" aria-hidden="true"/>
 
         <p class="hint">Tap anywhere here to play music</p>
@@ -72,32 +71,24 @@
         <p class="section-sub">Tap the flame to reveal a special message.</p>
 
         <div class="cake-wrap" id="cakeWrap" aria-hidden="false">
-          <!-- Cartoon cake SVG -->
+          <!-- Vector cartoon cake (SVG) -->
           <svg id="cartoonCake" class="cake-svg" viewBox="0 0 260 220" role="img" aria-label="Cute cartoon cake">
-            <!-- Plate -->
             <ellipse cx="130" cy="200" rx="100" ry="12" fill="#ffeef8" opacity="0.9"/>
-            <!-- Bottom layer -->
             <rect x="35" y="110" width="190" height="50" rx="18" fill="#ffd7ea" stroke="#f6a8d0" stroke-width="3"/>
-            <!-- Middle icing -->
             <path d="M35 110c18-28 50-18 95-18s77-10 95 18v6H35z" fill="#fff7ff"/>
-            <!-- Top layer -->
             <rect x="60" y="70" width="140" height="50" rx="14" fill="#ffecf9" stroke="#f6a8d0" stroke-width="3"/>
-            <!-- Sprinkles -->
             <g fill="#ff7fbf">
               <rect x="85" y="80" width="6" height="12" rx="3" transform="rotate(-12 85 80)"/>
               <rect x="110" y="88" width="6" height="12" rx="3" transform="rotate(12 110 88)"/>
               <rect x="140" y="78" width="6" height="12" rx="3" transform="rotate(-6 140 78)"/>
               <rect x="170" y="86" width="6" height="12" rx="3" transform="rotate(18 170 86)"/>
             </g>
-            <!-- Candle -->
             <rect x="125" y="28" width="10" height="44" rx="3" fill="#6f42c1"/>
-            <!-- Wick and flame group (clickable) -->
             <g id="flameGroup" class="flame" role="button" tabindex="0" aria-label="Blow out the candle">
               <path d="M130 20c6 -10 12 -10 12 -18 0 -12 -8 -12 -12 -12s-12 0-12 12c0 8 6 8 12 18z" fill="#ffb84d"/>
               <path d="M130 16c3 -7 6 -7 6 -12 0 -6 -4 -6 -6 -6s-6 0-6 6c0 5 3 5 6 12z" fill="#fff2c9" opacity="0.85"/>
             </g>
 
-            <!-- Cute face on cake -->
             <g transform="translate(90,125)">
               <circle cx="12" cy="12" r="3" fill="#6b2350"/>
               <circle cx="68" cy="12" r="3" fill="#6b2350"/>
@@ -142,13 +133,19 @@
         <h2 class="section-title">Flowers</h2>
         <p class="section-sub">Some pretty flowers for you.</p>
 
-        <div class="flower-grid" aria-live="polite">
-          <img src="assets/flower1.jpg" alt="Flower 1" />
-          <img src="assets/flower2.jpg" alt="Flower 2" />
-          <img src="assets/flower3.jpg" alt="Flower 3" />
-          <img src="assets/flower4.jpg" alt="Flower 4" />
-          <img src="assets/flower5.jpg" alt="Flower 5" />
-          <img src="assets/flower6.jpg" alt="Flower 6" />
+        <!-- collapsible: on small screens this section will start collapsed -->
+        <div class="collapsible" data-collapsed>
+          <button class="collapsible-toggle" aria-expanded="true">Show flowers</button>
+          <div class="collapsible-content">
+            <div class="flower-grid" aria-live="polite">
+              <img class="lazy" data-src="assets/flower1.jpg" src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///ywAAAAAAQABAAACAUwAOw==" alt="Flower 1" />
+              <img class="lazy" data-src="assets/flower2.jpg" src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///ywAAAAAAQABAAACAUwAOw==" alt="Flower 2" />
+              <img class="lazy" data-src="assets/flower3.jpg" src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///ywAAAAAAQABAAACAUwAOw==" alt="Flower 3" />
+              <img class="lazy" data-src="assets/flower4.jpg" src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///ywAAAAAAQABAAACAUwAOw==" alt="Flower 4" />
+              <img class="lazy" data-src="assets/flower5.jpg" src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///ywAAAAAAQABAAACAUwAOw==" alt="Flower 5" />
+              <img class="lazy" data-src="assets/flower6.jpg" src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///ywAAAAAAQABAAACAUwAOw==" alt="Flower 6" />
+            </div>
+          </div>
         </div>
       </div>
     </section>
@@ -159,27 +156,33 @@
         <h2 class="section-title">Playlist</h2>
         <p class="section-sub">Tap a title to play the song/video here.</p>
 
-        <div class="playlist-wrap">
-          <div class="playlist-grid">
-            <div class="playlist-list">
-              <ul class="playlist" id="playlistList" role="list">
-                <li class="playlist-item" tabindex="0" data-youtube="https://www.youtube.com/embed/dQw4w9WgXcQ">Song 1 — Surprise Song</li>
-                <li class="playlist-item" tabindex="0" data-youtube="https://www.youtube.com/embed/3GwjfUFyY6M">Song 2 — Favorite</li>
-                <li class="playlist-item" tabindex="0" data-youtube="https://www.youtube.com/embed/5qap5aO4i9A">Song 3 — Chill</li>
-              </ul>
-            </div>
+        <div class="collapsible" data-collapsed>
+          <button class="collapsible-toggle" aria-expanded="true">Show playlist</button>
+          <div class="collapsible-content">
+            <div class="playlist-wrap">
+              <div class="playlist-grid">
+                <div class="playlist-list">
+                  <ul class="playlist" id="playlistList" role="list">
+                    <li class="playlist-item" tabindex="0" data-youtube="https://www.youtube.com/embed/dQw4w9WgXcQ">Song 1 — Surprise Song</li>
+                    <li class="playlist-item" tabindex="0" data-youtube="https://www.youtube.com/embed/3GwjfUFyY6M">Song 2 — Favorite</li>
+                    <li class="playlist-item" tabindex="0" data-youtube="https://www.youtube.com/embed/5qap5aO4i9A">Song 3 — Chill</li>
+                  </ul>
+                </div>
 
-            <div class="playlist-player" id="playlistPlayer" aria-hidden="true">
-              <div class="player-header">
-                <strong id="playerTitle">Select a song</strong>
-                <button id="playerClose" class="player-close" aria-label="Close player">✕</button>
-              </div>
-              <div class="player-frame" id="playerFrameWrap">
-                <iframe id="playerIframe" src="" frameborder="0" allow="autoplay; encrypted-media; picture-in-picture" allowfullscreen title="Playlist player"></iframe>
+                <div class="playlist-player" id="playlistPlayer" aria-hidden="true">
+                  <div class="player-header">
+                    <strong id="playerTitle">Select a song</strong>
+                    <button id="playerClose" class="player-close" aria-label="Close player">✕</button>
+                  </div>
+                  <div class="player-frame" id="playerFrameWrap">
+                    <iframe id="playerIframe" src="" frameborder="0" allow="autoplay; encrypted-media; picture-in-picture" allowfullscreen title="Playlist player"></iframe>
+                  </div>
+                </div>
               </div>
             </div>
           </div>
         </div>
+
       </div>
     </section>
   </main>
