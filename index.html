@@ -42,12 +42,26 @@
     <!-- HOME -->
     <section id="home" class="page active">
       <canvas id="confetti"></canvas>
+
       <div class="hero" id="heroTap" role="button" tabindex="0" aria-label="Play birthday music. Tap to play.">
+        <!-- Floating CSS balloons (decorative) -->
+        <div class="balloon-container" aria-hidden="true">
+          <div class="balloon b1"></div>
+          <div class="balloon b2"></div>
+          <div class="balloon b3"></div>
+          <div class="balloon b4"></div>
+          <div class="balloon b5"></div>
+        </div>
+
         <h1 class="title">HAPPY BIRTHDAY!</h1>
         <p class="sub">Hope today makes you smile a little more than usual.</p>
-        <img src="assets/balloons.gif" alt="Balloon celebration" class="balloons" />
+
+        <!-- decorative GIF (keeps charm) -->
+        <img src="assets/balloons.gif" alt="" class="balloons" aria-hidden="true"/>
+
         <p class="hint">Tap anywhere here to play music</p>
       </div>
+
       <audio id="bgAudio" src="assets/song.mp3" preload="none"></audio>
     </section>
 
@@ -58,14 +72,36 @@
         <p class="section-sub">Tap the flame to reveal a special message.</p>
 
         <div class="cake-wrap" id="cakeWrap" aria-hidden="false">
-          <svg id="cakeSvg" viewBox="0 0 200 200" class="cake-svg" role="img" aria-label="Birthday cake">
-            <rect x="30" y="90" width="140" height="60" rx="10" fill="#ffecf3" stroke="#f5a8cf" stroke-width="3"/>
-            <rect x="50" y="70" width="100" height="20" rx="6" fill="#ffe1f0" stroke="#f5a8cf" stroke-width="2"/>
-            <path d="M30 90c10-20 40 0 70 0s60-20 70 0v5H30z" fill="#ffddee"/>
-            <rect x="95" y="45" width="10" height="40" fill="#b47ed6" rx="2"/>
+          <!-- Cartoon cake SVG -->
+          <svg id="cartoonCake" class="cake-svg" viewBox="0 0 260 220" role="img" aria-label="Cute cartoon cake">
+            <!-- Plate -->
+            <ellipse cx="130" cy="200" rx="100" ry="12" fill="#ffeef8" opacity="0.9"/>
+            <!-- Bottom layer -->
+            <rect x="35" y="110" width="190" height="50" rx="18" fill="#ffd7ea" stroke="#f6a8d0" stroke-width="3"/>
+            <!-- Middle icing -->
+            <path d="M35 110c18-28 50-18 95-18s77-10 95 18v6H35z" fill="#fff7ff"/>
+            <!-- Top layer -->
+            <rect x="60" y="70" width="140" height="50" rx="14" fill="#ffecf9" stroke="#f6a8d0" stroke-width="3"/>
+            <!-- Sprinkles -->
+            <g fill="#ff7fbf">
+              <rect x="85" y="80" width="6" height="12" rx="3" transform="rotate(-12 85 80)"/>
+              <rect x="110" y="88" width="6" height="12" rx="3" transform="rotate(12 110 88)"/>
+              <rect x="140" y="78" width="6" height="12" rx="3" transform="rotate(-6 140 78)"/>
+              <rect x="170" y="86" width="6" height="12" rx="3" transform="rotate(18 170 86)"/>
+            </g>
+            <!-- Candle -->
+            <rect x="125" y="28" width="10" height="44" rx="3" fill="#6f42c1"/>
+            <!-- Wick and flame group (clickable) -->
             <g id="flameGroup" class="flame" role="button" tabindex="0" aria-label="Blow out the candle">
-              <path id="flamePath" d="M100 40c4 -6 8 -6 8 -12 0 -8 -6 -8 -8 -8s-8 0-8 8c0 6 4 6 8 12z" fill="#ffb84d"/>
-              <path d="M100 36c2 -4 4 -4 4 -8 0 -5 -4 -5 -4 -5s-4 0-4 5c0 4 2 4 4 8z" fill="#fff2c9" opacity="0.8"/>
+              <path d="M130 20c6 -10 12 -10 12 -18 0 -12 -8 -12 -12 -12s-12 0-12 12c0 8 6 8 12 18z" fill="#ffb84d"/>
+              <path d="M130 16c3 -7 6 -7 6 -12 0 -6 -4 -6 -6 -6s-6 0-6 6c0 5 3 5 6 12z" fill="#fff2c9" opacity="0.85"/>
+            </g>
+
+            <!-- Cute face on cake -->
+            <g transform="translate(90,125)">
+              <circle cx="12" cy="12" r="3" fill="#6b2350"/>
+              <circle cx="68" cy="12" r="3" fill="#6b2350"/>
+              <path d="M20 28 q30 18 48 0" stroke="#6b2350" stroke-width="2.5" fill="none" stroke-linecap="round"/>
             </g>
           </svg>
         </div>
@@ -124,11 +160,9 @@
         <p class="section-sub">Tap a title to play the song/video here.</p>
 
         <div class="playlist-wrap">
-          <!-- Responsive layout: on desktop list left / video right; on mobile video above list -->
           <div class="playlist-grid">
             <div class="playlist-list">
               <ul class="playlist" id="playlistList" role="list">
-                <!-- Replace with your YouTube embed URLs -->
                 <li class="playlist-item" tabindex="0" data-youtube="https://www.youtube.com/embed/dQw4w9WgXcQ">Song 1 — Surprise Song</li>
                 <li class="playlist-item" tabindex="0" data-youtube="https://www.youtube.com/embed/3GwjfUFyY6M">Song 2 — Favorite</li>
                 <li class="playlist-item" tabindex="0" data-youtube="https://www.youtube.com/embed/5qap5aO4i9A">Song 3 — Chill</li>
