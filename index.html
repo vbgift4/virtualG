@@ -1,0 +1,148 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Happy Birthday</title>
+  <link rel="stylesheet" href="styles.css" />
+  <meta name="theme-color" content="#ffd1e6" />
+</head>
+<body>
+  <header class="nav">
+    <div class="nav-left">
+      <button id="logoBtn" class="logo" aria-label="home">
+        <span class="logo-text">B‑Day</span>
+      </button>
+    </div>
+    <nav class="nav-right" aria-label="Main navigation">
+      <button class="nav-item" data-target="home" title="Home">
+        <svg class="icon" viewBox="0 0 24 24"><path d="M3 11.5L12 4l9 7.5V20a1 1 0 0 1-1 1h-5v-6H9v6H4a1 1 0 0 1-1-1V11.5z" fill="currentColor"/></svg>
+        <span>Home</span>
+      </button>
+      <button class="nav-item" data-target="cake" title="Cake">
+        <svg class="icon" viewBox="0 0 24 24"><path d="M12 2s2 1 2 3-2 3-2 3-2-1-2-3 2-3 2-3zm8 9v7a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2v-7h16zM4 9h16v2H4V9z" fill="currentColor"/></svg>
+        <span>Cake</span>
+      </button>
+      <button class="nav-item" data-target="message" title="Message">
+        <svg class="icon" viewBox="0 0 24 24"><path d="M20 2H4a2 2 0 0 0-2 2v14l4-2h14a2 2 0 0 0 2-2V4a2 2 0 0 0-2-2z" fill="currentColor"/></svg>
+        <span>Message</span>
+      </button>
+      <button class="nav-item" data-target="flowers" title="Flowers">
+        <svg class="icon" viewBox="0 0 24 24"><path d="M12 2l1.2 3.2L16.5 7 13.2 8.2 12 11 10.8 8.2 7.5 7 10.8 5.2zM4 14a4 4 0 1 0 8 0 4 4 0 0 0-8 0zM16 14a4 4 0 1 0 8 0 4 4 0 0 0-8 0z" fill="currentColor"/></svg>
+        <span>Flowers</span>
+      </button>
+      <button class="nav-item" data-target="playlist" title="Playlist">
+        <svg class="icon" viewBox="0 0 24 24"><path d="M3 10h12v2H3v-2zm0-4h12v2H3V6zm0 8h8v2H3v-2zm14 5v-8l6 4-6 4z" fill="currentColor"/></svg>
+        <span>Playlist</span>
+      </button>
+    </nav>
+  </header>
+
+  <main id="main">
+    <!-- HOME -->
+    <section id="home" class="page active">
+      <canvas id="confetti"></canvas>
+      <div class="hero" id="heroTap" role="button" tabindex="0" aria-label="Play birthday music. Tap to play.">
+        <h1 class="title">HAPPY BIRTHDAY!</h1>
+        <p class="sub">Hope today makes you smile a little more than usual.</p>
+        <img src="assets/balloons.gif" alt="Balloon celebration" class="balloons" />
+        <p class="hint">Tap anywhere here to play music</p>
+      </div>
+      <audio id="bgAudio" src="assets/song.mp3" preload="none"></audio>
+    </section>
+
+    <!-- CAKE -->
+    <section id="cake" class="page">
+      <div class="section-inner">
+        <h2 class="section-title">Make a wish!</h2>
+        <p class="section-sub">Tap the flame to reveal a special message.</p>
+
+        <div class="cake-wrap" id="cakeWrap" aria-hidden="false">
+          <svg id="cakeSvg" viewBox="0 0 200 200" class="cake-svg" role="img" aria-label="Birthday cake">
+            <rect x="30" y="90" width="140" height="60" rx="10" fill="#ffecf3" stroke="#f5a8cf" stroke-width="3"/>
+            <rect x="50" y="70" width="100" height="20" rx="6" fill="#ffe1f0" stroke="#f5a8cf" stroke-width="2"/>
+            <path d="M30 90c10-20 40 0 70 0s60-20 70 0v5H30z" fill="#ffddee"/>
+            <rect x="95" y="45" width="10" height="40" fill="#b47ed6" rx="2"/>
+            <g id="flameGroup" class="flame" role="button" tabindex="0" aria-label="Blow out the candle">
+              <path id="flamePath" d="M100 40c4 -6 8 -6 8 -12 0 -8 -6 -8 -8 -8s-8 0-8 8c0 6 4 6 8 12z" fill="#ffb84d"/>
+              <path d="M100 36c2 -4 4 -4 4 -8 0 -5 -4 -5 -4 -5s-4 0-4 5c0 4 2 4 4 8z" fill="#fff2c9" opacity="0.8"/>
+            </g>
+          </svg>
+        </div>
+
+        <div id="cakeMessage" class="popup hidden" role="dialog" aria-live="polite">
+          <div class="popup-inner">
+            <p>Make a wish! 🎂 I hope all your dreams come true today. ❤️</p>
+            <button class="closeBtn">Close</button>
+          </div>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- MESSAGE -->
+    <section id="message" class="page">
+      <div class="section-inner">
+        <h2 class="section-title">Messages</h2>
+        <p class="section-sub">A little note written just for you.</p>
+
+        <div class="paper">
+          <div class="written" id="typeText"></div>
+          <svg class="pencil" viewBox="0 0 64 64" id="pencilSvg">
+            <path d="M2 54l10 10 46-46-10-10L2 54z" fill="#d8a24a"/>
+            <path d="M52 6l6 6-6 6-6-6 6-6z" fill="#ffd1a8"/>
+          </svg>
+        </div>
+
+        <div id="messageFollow" class="follow hidden">
+          <p>And one more thing — you're the best part of my every day. 💖</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- FLOWERS -->
+    <section id="flowers" class="page">
+      <div class="section-inner">
+        <h2 class="section-title">Flowers</h2>
+        <p class="section-sub">Some pretty flowers for you.</p>
+
+        <div class="flower-grid" aria-live="polite">
+          <img src="assets/flower1.jpg" alt="Flower 1" />
+          <img src="assets/flower2.jpg" alt="Flower 2" />
+          <img src="assets/flower3.jpg" alt="Flower 3" />
+          <img src="assets/flower4.jpg" alt="Flower 4" />
+          <img src="assets/flower5.jpg" alt="Flower 5" />
+          <img src="assets/flower6.jpg" alt="Flower 6" />
+        </div>
+      </div>
+    </section>
+
+    <!-- PLAYLIST -->
+    <section id="playlist" class="page">
+      <div class="section-inner">
+        <h2 class="section-title">Playlist</h2>
+        <p class="section-sub">Tap a title to project the song/video on the screen.</p>
+
+        <div class="playlist-wrap">
+          <ul class="playlist">
+            <li data-youtube="https://www.youtube.com/embed/dQw4w9WgXcQ">Song 1 — Surprise Song</li>
+            <li data-youtube="https://www.youtube.com/embed/3GwjfUFyY6M">Song 2 — Favorite</li>
+            <li data-youtube="https://www.youtube.com/embed/5qap5aO4i9A">Song 3 — Chill</li>
+          </ul>
+
+          <div id="videoScreen" class="video-screen hidden" aria-hidden="true">
+            <button id="closeVideo" class="closeVideo" aria-label="Close video">✕</button>
+            <iframe id="videoFrame" src="" frameborder="0" allow="autoplay; encrypted-media" allowfullscreen></iframe>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer class="footer">
+    <small>Made with ❤️ — Happy Birthday</small>
+  </footer>
+
+  <script src="script.js" defer></script>
+</body>
+</html>
