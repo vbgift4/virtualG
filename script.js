@@ -1,4 +1,6 @@
-// Main interactions for the birthday site (persistent player in Playlist section)
+// Main interactions for the birthday site
+// Updated: keeps confetti + floating balloons, cartoon cake flame works as before,
+// playlist persistent player remains unchanged.
 
 document.addEventListener('DOMContentLoaded', ()=>{
 
@@ -50,13 +52,17 @@ document.addEventListener('DOMContentLoaded', ()=>{
   const cakeMessage = document.getElementById('cakeMessage');
   const closeBtn = cakeMessage.querySelector('.closeBtn');
 
-  flameGroup.addEventListener('click', ()=> {
-    cakeMessage.classList.remove('hidden');
-  });
-  flameGroup.addEventListener('keydown', (e)=> {
-    if (e.key==='Enter' || e.key===' ') { e.preventDefault(); flameGroup.click(); }
-  });
-  closeBtn.addEventListener('click', ()=> cakeMessage.classList.add('hidden'));
+  if (flameGroup) {
+    flameGroup.addEventListener('click', ()=> {
+      cakeMessage.classList.remove('hidden');
+    });
+    flameGroup.addEventListener('keydown', (e)=> {
+      if (e.key==='Enter' || e.key===' ') { e.preventDefault(); flameGroup.click(); }
+    });
+  }
+  if (closeBtn) {
+    closeBtn.addEventListener('click', ()=> cakeMessage.classList.add('hidden'));
+  }
 
   // --- Message typing animation ---
   const textEl = document.getElementById('typeText');
@@ -102,7 +108,7 @@ document.addEventListener('DOMContentLoaded', ()=>{
   });
   observer.observe(document.querySelector('main'), {attributes:true, subtree:true, attributeFilter:['class']});
 
-  // --- Playlist: persistent player area ---
+  // --- Playlist: persistent player area (unchanged behavior) ---
   const playlistItems = document.querySelectorAll('.playlist-item');
   const playerWrap = document.getElementById('playlistPlayer');
   const playerIframe = document.getElementById('playerIframe');
@@ -162,18 +168,19 @@ document.addEventListener('DOMContentLoaded', ()=>{
 
   function createConfetti(){
     confettiPieces = [];
-    const count = 80;
+    const count = 100;
+    const colors = ['#ff7fbf','#ffd1e6','#cbb0ff','#ffe89a','#ffb4c6','#ff9db7'];
     for (let i=0;i<count;i++){
       confettiPieces.push({
         x: random(0, confettiCanvas.width),
         y: random(-confettiCanvas.height, 0),
         w: random(6,12),
         h: random(8,18),
-        color: ['#ff7fbf','#ffd1e6','#cbb0ff','#ffe89a'][Math.floor(Math.random()*4)],
+        color: colors[Math.floor(Math.random()*colors.length)],
         rot: random(0,360),
-        velY: random(1,4),
-        velX: random(-1,1),
-        rotSpeed: random(-6,6),
+        velY: random(1.5,5),
+        velX: random(-1.5,1.5),
+        rotSpeed: random(-8,8),
       });
     }
   }
@@ -191,10 +198,10 @@ document.addEventListener('DOMContentLoaded', ()=>{
 
       p.x += p.velX;
       p.y += p.velY;
-      p.rot += p.rotSpeed * 0.5;
+      p.rot += p.rotSpeed * 0.6;
 
-      if (p.y > confettiCanvas.height + 20) {
-        p.y = -10;
+      if (p.y > confettiCanvas.height + 40) {
+        p.y = -20;
         p.x = random(0, confettiCanvas.width);
       }
     });
@@ -211,7 +218,7 @@ document.addEventListener('DOMContentLoaded', ()=>{
     createConfetti();
     confettiRunning = true;
     animateConfetti();
-    setTimeout(()=> { stopConfetti(); }, 8000);
+    setTimeout(()=> { stopConfetti(); }, 9000);
   }
   function stopConfetti(){
     if (!ctx || !confettiRunning) return;
