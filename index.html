@@ -1,197 +1,94 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>YEHEY!!</title>
-  <link rel="stylesheet" href="styles.css" />
-  <meta name="theme-color" content="#ffd1e6" />
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>YEHEY!</title>
+<link rel="stylesheet" href="style.css">
 </head>
 <body>
-  <header class="nav">
-    <div class="nav-left">
-      <button id="logoBtn" class="logo" aria-label="home">
-        <span class="logo-text">B‑Day</span>
-      </button>
+
+<!-- NAV -->
+<nav class="nav">
+  <button id="logoBtn" class="logo">B-Day</button>
+  <div class="nav-right">
+    <button class="nav-item" data-target="home">Home</button>
+    <button class="nav-item" data-target="cake">Cake</button>
+    <button class="nav-item" data-target="message">Message</button>
+    <button class="nav-item" data-target="flowers">Flowers</button>
+    <button class="nav-item" data-target="playlist">Playlist</button>
+  </div>
+</nav>
+
+<main>
+  <!-- HOME -->
+  <section class="page active" id="home">
+    <div class="hero" id="heroTap">
+      <h1 class="title">HAPPY BIRTHDAY!</h1>
+      <p class="sub">Hope today makes you smile a little more than usual.</p>
+      <img src="balloons.gif" alt="Balloons" class="balloons">
     </div>
-    <nav class="nav-right" aria-label="Main navigation">
-      <button class="nav-item" data-target="home" title="Home">
-        <svg class="icon" viewBox="0 0 24 24"><path d="M3 11.5L12 4l9 7.5V20a1 1 0 0 1-1 1h-5v-6H9v6H4a1 1 0 0 1-1-1V11.5z" fill="currentColor"/></svg>
-        <span>Home</span>
-      </button>
-      <button class="nav-item" data-target="cake" title="Cake">
-        <svg class="icon" viewBox="0 0 24 24"><path d="M12 2s2 1 2 3-2 3-2 3-2-1-2-3 2-3 2-3zm8 9v7a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2v-7h16zM4 9h16v2H4V9z" fill="currentColor"/></svg>
-        <span>Cake</span>
-      </button>
-      <button class="nav-item" data-target="message" title="Message">
-        <svg class="icon" viewBox="0 0 24 24"><path d="M20 2H4a2 2 0 0 0-2 2v14l4-2h14a2 2 0 0 0 2-2V4a2 2 0 0 0-2-2z" fill="currentColor"/></svg>
-        <span>Message</span>
-      </button>
-      <button class="nav-item" data-target="flowers" title="Flowers">
-        <svg class="icon" viewBox="0 0 24 24"><path d="M12 2l1.2 3.2L16.5 7 13.2 8.2 12 11 10.8 8.2 7.5 7 10.8 5.2zM4 14a4 4 0 1 0 8 0 4 4 0 0 0-8 0zM16 14a4 4 0 1 0 8 0 4 4 0 0 0-8 0z" fill="currentColor"/></svg>
-        <span>Flowers</span>
-      </button>
-      <button class="nav-item" data-target="playlist" title="Playlist">
-        <svg class="icon" viewBox="0 0 24 24"><path d="M3 10h12v2H3v-2zm0-4h12v2H3V6zm0 8h8v2H3v-2zm14 5v-8l6 4-6 4z" fill="currentColor"/></svg>
-        <span>Playlist</span>
-      </button>
-    </nav>
-  </header>
+  </section>
 
-  <main id="main">
-    <!-- HOME -->
-    <section id="home" class="page active">
-      <canvas id="confetti"></canvas>
-
-      <div class="hero" id="heroTap" role="button" tabindex="0" aria-label="Play birthday music. Tap to play.">
-        <div class="balloon-container" aria-hidden="true">
-          <div class="balloon b1"></div>
-          <div class="balloon b2"></div>
-          <div class="balloon b3"></div>
-          <div class="balloon b4"></div>
-          <div class="balloon b5"></div>
-        </div>
-
-        <h1 class="title">HAPPY BIRTHDAY!</h1>
-        <p class="sub">Hope today makes you smile a little more than usual.</p>
-
-        <!-- decorative GIF (non-lazy so it appears quickly on home) -->
-        <img src="assets/balloons.gif" alt="" class="balloons" aria-hidden="true"/>
-
-        <p class="hint">Tap anywhere here to play music</p>
+  <!-- CAKE -->
+  <section class="page" id="cake">
+    <div class="cake-wrap">
+      <svg class="cake-svg" id="flameGroup">
+        <rect x="80" y="100" width="140" height="100" fill="#ff9db7" rx="16"/>
+        <circle cx="150" cy="90" r="12" fill="#ffdd55" class="flame"/>
+      </svg>
+    </div>
+    <div id="cakeMessage" class="popup hidden">
+      <div class="popup-inner">
+        <p>🎉 Surprise! Make a wish! 🎉</p>
+        <button class="closeBtn">Close</button>
       </div>
+    </div>
+  </section>
 
-     <audio id="bgAudio" src="assets/song.mp3" preload="auto"></audio>
+  <!-- MESSAGE -->
+  <section class="page" id="message">
+    <div class="paper">
+      <div id="typeText" class="written"></div>
+      <img id="pencilSvg" class="pencil" src="pencil.png" alt="Pencil">
+      <div id="messageFollow" class="follow hidden"></div>
+    </div>
+  </section>
 
-    </section>
-
-    <!-- CAKE -->
-    <section id="cake" class="page">
-      <div class="section-inner">
-        <h2 class="section-title">Make a wish!</h2>
-        <p class="section-sub">Tap the flame to reveal a special message.</p>
-
-        <div class="cake-wrap" id="cakeWrap" aria-hidden="false">
-          <!-- Vector cartoon cake (SVG) -->
-          <svg id="cartoonCake" class="cake-svg" viewBox="0 0 260 220" role="img" aria-label="Cute cartoon cake">
-            <ellipse cx="130" cy="200" rx="100" ry="12" fill="#ffeef8" opacity="0.9"/>
-            <rect x="35" y="110" width="190" height="50" rx="18" fill="#ffd7ea" stroke="#f6a8d0" stroke-width="3"/>
-            <path d="M35 110c18-28 50-18 95-18s77-10 95 18v6H35z" fill="#fff7ff"/>
-            <rect x="60" y="70" width="140" height="50" rx="14" fill="#ffecf9" stroke="#f6a8d0" stroke-width="3"/>
-            <g fill="#ff7fbf">
-              <rect x="85" y="80" width="6" height="12" rx="3" transform="rotate(-12 85 80)"/>
-              <rect x="110" y="88" width="6" height="12" rx="3" transform="rotate(12 110 88)"/>
-              <rect x="140" y="78" width="6" height="12" rx="3" transform="rotate(-6 140 78)"/>
-              <rect x="170" y="86" width="6" height="12" rx="3" transform="rotate(18 170 86)"/>
-            </g>
-            <rect x="125" y="28" width="10" height="44" rx="3" fill="#6f42c1"/>
-            <g id="flameGroup" class="flame" role="button" tabindex="0" aria-label="Blow out the candle">
-              <path d="M130 20c6 -10 12 -10 12 -18 0 -12 -8 -12 -12 -12s-12 0-12 12c0 8 6 8 12 18z" fill="#ffb84d"/>
-              <path d="M130 16c3 -7 6 -7 6 -12 0 -6 -4 -6 -6 -6s-6 0-6 6c0 5 3 5 6 12z" fill="#fff2c9" opacity="0.85"/>
-            </g>
-
-            <g transform="translate(90,125)">
-              <circle cx="12" cy="12" r="3" fill="#6b2350"/>
-              <circle cx="68" cy="12" r="3" fill="#6b2350"/>
-              <path d="M20 28 q30 18 48 0" stroke="#6b2350" stroke-width="2.5" fill="none" stroke-linecap="round"/>
-            </g>
-          </svg>
-        </div>
-
-        <div id="cakeMessage" class="popup hidden" role="dialog" aria-live="polite">
-          <div class="popup-inner">
-            <p>Make a wish! 🎂 I hope all your dreams come true today. ❤️</p>
-            <button class="closeBtn">Close</button>
-          </div>
-        </div>
-
+  <!-- FLOWERS -->
+  <section class="page" id="flowers">
+    <div class="flower-grid collapsible">
+      <button class="collapsible-toggle">Show Flowers</button>
+      <div class="collapsible-content">
+        <img class="lazy" data-src="flower1.jpg" alt="Flower1">
+        <img class="lazy" data-src="flower2.jpg" alt="Flower2">
+        <img class="lazy" data-src="flower3.jpg" alt="Flower3">
       </div>
-    </section>
+    </div>
+  </section>
 
-    <!-- MESSAGE -->
-    <section id="message" class="page">
-      <div class="section-inner">
-        <h2 class="section-title">Messages</h2>
-        <p class="section-sub">A little note written just for you.</p>
-
-        <div class="paper">
-          <div class="written" id="typeText"></div>
-          <svg class="pencil" viewBox="0 0 64 64" id="pencilSvg">
-            <path d="M2 54l10 10 46-46-10-10L2 54z" fill="#d8a24a"/>
-            <path d="M52 6l6 6-6 6-6-6 6-6z" fill="#ffd1a8"/>
-          </svg>
+  <!-- PLAYLIST -->
+  <section class="page" id="playlist">
+    <div class="playlist-grid">
+      <ul class="playlist" id="playlistList">
+        <li class="playlist-item" data-youtube="https://www.youtube.com/embed/VIDEOID1">Song 1</li>
+        <li class="playlist-item" data-youtube="https://www.youtube.com/embed/VIDEOID2">Song 2</li>
+      </ul>
+      <div class="playlist-player" id="playlistPlayer" aria-hidden="true">
+        <div class="player-header">
+          <span id="playerTitle">Playing</span>
+          <button id="playerClose" class="player-close">✕</button>
         </div>
-
-        <div id="messageFollow" class="follow hidden">
-          <p>And one more thing — you're the best part of my every day. 💖</p>
+        <div class="player-frame">
+          <iframe id="playerIframe" src="" allow="autoplay; encrypted-media" allowfullscreen></iframe>
         </div>
       </div>
-    </section>
+    </div>
+  </section>
+</main>
 
-    <!-- FLOWERS -->
-    <section id="flowers" class="page">
-      <div class="section-inner">
-        <h2 class="section-title">Flowers</h2>
-        <p class="section-sub">Some pretty flowers for you.</p>
-
-        <!-- collapsible: on small screens this section will start collapsed -->
-        <div class="collapsible" data-collapsed>
-          <button class="collapsible-toggle" aria-expanded="true">Show flowers</button>
-          <div class="collapsible-content">
-            <div class="flower-grid" aria-live="polite">
-              <img class="lazy" data-src="assets/flower1.jpg" src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///ywAAAAAAQABAAACAUwAOw==" alt="Flower 1" />
-              <img class="lazy" data-src="assets/flower2.jpg" src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///ywAAAAAAQABAAACAUwAOw==" alt="Flower 2" />
-              <img class="lazy" data-src="assets/flower3.jpg" src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///ywAAAAAAQABAAACAUwAOw==" alt="Flower 3" />
-              <img class="lazy" data-src="assets/flower4.jpg" src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///ywAAAAAAQABAAACAUwAOw==" alt="Flower 4" />
-              <img class="lazy" data-src="assets/flower5.jpg" src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///ywAAAAAAQABAAACAUwAOw==" alt="Flower 5" />
-              <img class="lazy" data-src="assets/flower6.jpg" src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///ywAAAAAAQABAAACAUwAOw==" alt="Flower 6" />
-            </div>
-          </div>
-        </div>
-      </div>
-    </section>
-
-    <!-- PLAYLIST -->
-    <section id="playlist" class="page">
-      <div class="section-inner">
-        <h2 class="section-title">Playlist</h2>
-        <p class="section-sub">Tap a title to play the song/video here.</p>
-
-        <div class="collapsible" data-collapsed>
-          <button class="collapsible-toggle" aria-expanded="true">Show playlist</button>
-          <div class="collapsible-content">
-            <div class="playlist-wrap">
-              <div class="playlist-grid">
-                <div class="playlist-list">
-                  <ul class="playlist" id="playlistList" role="list">
-                    <li class="playlist-item" tabindex="0" data-youtube="https://www.youtube.com/embed/dQw4w9WgXcQ">Song 1 — Surprise Song</li>
-                    <li class="playlist-item" tabindex="0" data-youtube="https://www.youtube.com/embed/3GwjfUFyY6M">Song 2 — Favorite</li>
-                    <li class="playlist-item" tabindex="0" data-youtube="https://www.youtube.com/embed/5qap5aO4i9A">Song 3 — Chill</li>
-                  </ul>
-                </div>
-
-                <div class="playlist-player" id="playlistPlayer" aria-hidden="true">
-                  <div class="player-header">
-                    <strong id="playerTitle">Select a song</strong>
-                    <button id="playerClose" class="player-close" aria-label="Close player">✕</button>
-                  </div>
-                  <div class="player-frame" id="playerFrameWrap">
-                    <iframe id="playerIframe" src="" frameborder="0" allow="autoplay; encrypted-media; picture-in-picture" allowfullscreen title="Playlist player"></iframe>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-
-      </div>
-    </section>
-  </main>
-
-  <footer class="footer">
-    <small>Made with ❤️ — Happy Birthday</small>
-  </footer>
-
-  <script src="script.js" defer></script>
+<canvas id="confetti"></canvas>
+<audio id="bgAudio" src="song.mp3" loop></audio>
+<script src="script.js"></script>
 </body>
 </html>
