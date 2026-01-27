@@ -121,18 +121,29 @@
     <section id="playlist" class="page">
       <div class="section-inner">
         <h2 class="section-title">Playlist</h2>
-        <p class="section-sub">Tap a title to project the song/video on the screen.</p>
+        <p class="section-sub">Tap a title to play the song/video here.</p>
 
         <div class="playlist-wrap">
-          <ul class="playlist">
-            <li data-youtube="https://www.youtube.com/embed/dQw4w9WgXcQ">Song 1 — Surprise Song</li>
-            <li data-youtube="https://www.youtube.com/embed/3GwjfUFyY6M">Song 2 — Favorite</li>
-            <li data-youtube="https://www.youtube.com/embed/5qap5aO4i9A">Song 3 — Chill</li>
-          </ul>
+          <!-- Responsive layout: on desktop list left / video right; on mobile video above list -->
+          <div class="playlist-grid">
+            <div class="playlist-list">
+              <ul class="playlist" id="playlistList" role="list">
+                <!-- Replace with your YouTube embed URLs -->
+                <li class="playlist-item" tabindex="0" data-youtube="https://www.youtube.com/embed/dQw4w9WgXcQ">Song 1 — Surprise Song</li>
+                <li class="playlist-item" tabindex="0" data-youtube="https://www.youtube.com/embed/3GwjfUFyY6M">Song 2 — Favorite</li>
+                <li class="playlist-item" tabindex="0" data-youtube="https://www.youtube.com/embed/5qap5aO4i9A">Song 3 — Chill</li>
+              </ul>
+            </div>
 
-          <div id="videoScreen" class="video-screen hidden" aria-hidden="true">
-            <button id="closeVideo" class="closeVideo" aria-label="Close video">✕</button>
-            <iframe id="videoFrame" src="" frameborder="0" allow="autoplay; encrypted-media" allowfullscreen></iframe>
+            <div class="playlist-player" id="playlistPlayer" aria-hidden="true">
+              <div class="player-header">
+                <strong id="playerTitle">Select a song</strong>
+                <button id="playerClose" class="player-close" aria-label="Close player">✕</button>
+              </div>
+              <div class="player-frame" id="playerFrameWrap">
+                <iframe id="playerIframe" src="" frameborder="0" allow="autoplay; encrypted-media; picture-in-picture" allowfullscreen title="Playlist player"></iframe>
+              </div>
+            </div>
           </div>
         </div>
       </div>
