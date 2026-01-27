@@ -109,26 +109,40 @@ document.addEventListener('DOMContentLoaded', ()=>{
   const closeVideoBtn = document.getElementById('closeVideo');
 
   function openVideo(url){
+    if (!videoScreen || !videoFrame) return;
     videoFrame.src = url + "?autoplay=1&rel=0";
     videoScreen.classList.remove('hidden');
     videoScreen.setAttribute('aria-hidden','false');
+    // focus close button for accessibility
+    if (closeVideoBtn) closeVideoBtn.focus();
   }
   function closeVideo(){
-    if (videoScreen) {
-      videoScreen.classList.add('hidden');
-      videoFrame.src = '';
-      videoScreen.setAttribute('aria-hidden','true');
-    }
+    if (!videoScreen || !videoFrame) return;
+    videoScreen.classList.add('hidden');
+    videoFrame.src = '';
+    videoScreen.setAttribute('aria-hidden','true');
   }
 
   playlistItems.forEach(li=>{
     li.addEventListener('click', ()=> openVideo(li.dataset.youtube));
   });
-  closeVideoBtn.addEventListener('click', closeVideo);
+
+  // Attach listener only if button exists
+  if (closeVideoBtn) {
+    closeVideoBtn.addEventListener('click', closeVideo);
+  }
 
   // Close video on background click
-  videoScreen.addEventListener('click', (e)=>{
-    if (e.target === videoScreen) closeVideo();
+  if (videoScreen) {
+    videoScreen.addEventListener('click', (e)=>{
+      // click on overlay background (not the iframe or button)
+      if (e.target === videoScreen) closeVideo();
+    });
+  }
+
+  // Close on ESC key
+  document.addEventListener('keydown', (e)=>{
+    if (e.key === 'Escape') closeVideo();
   });
 
   // Confetti implementation (lightweight)
