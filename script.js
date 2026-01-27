@@ -46,6 +46,7 @@ document.addEventListener('DOMContentLoaded', ()=>{
     const current = document.querySelector('.page.active');
     if (current && current.id === 'home' && id !== 'home') {
       stopConfetti();
+      pauseHomepageAudio(); // stop audio when leaving homepage
       current.classList.remove('active');
       setTimeout(()=> {
         pages.forEach(p=> p.id === id ? p.classList.add('active') : p.classList.remove('active'));
@@ -58,6 +59,7 @@ document.addEventListener('DOMContentLoaded', ()=>{
     } else {
       pages.forEach(p=> p.id === id ? p.classList.add('active') : p.classList.remove('active'));
       stopConfetti();
+      pauseHomepageAudio(); // stop audio on other pages
       scrollMainTop();
     }
   }
@@ -70,37 +72,47 @@ document.addEventListener('DOMContentLoaded', ()=>{
   });
   logoBtn.addEventListener('click', ()=> showPage('home'));
 
- /* -------------------------
-   Hero tap: audio + confetti (desktop + mobile friendly)
-   ------------------------- */
-function playHeroAudio() {
-  if (bgAudio.paused) {
+  /* -------------------------
+     Hero tap: toggle audio per homepage visit
+     ------------------------- */
+  let homepageAudioPlaying = false; // true if music is playing
+
+  function startHomepageAudio() {
+    if (!bgAudio) return;
     bgAudio.play().then(() => {
-      console.log('Audio started');
+      homepageAudioPlaying = true;
+      console.log('Music playing ✅');
     }).catch(err => {
       console.warn('Audio play blocked:', err);
     });
   }
-}
 
-heroTap.addEventListener('click', () => {
-  playHeroAudio();
-
-  const home = document.getElementById('home');
-  if (home && home.classList.contains('active')) startConfetti();
-});
-
-heroTap.addEventListener('keydown', (e) => {
-  if (e.key === 'Enter' || e.key === ' ') {
-    e.preventDefault();
-    heroTap.click();
+  function pauseHomepageAudio() {
+    if (!bgAudio) return;
+    bgAudio.pause();
+    homepageAudioPlaying = false;
+    console.log('Music paused ⏸');
   }
-});
 
-// Mobile: first touch ensures audio plays
-heroTap.addEventListener('touchstart', () => {
-  playHeroAudio();
-}, { once: true });
+  heroTap.addEventListener('click', () => {
+    const home = document.getElementById('home');
+    if (!home || !home.classList.contains('active')) return;
+
+    if (homepageAudioPlaying) pauseHomepageAudio();
+    else startHomepageAudio();
+
+    startConfetti();
+  });
+
+  heroTap.addEventListener('keydown', (e) => {
+    if (e.key === 'Enter' || e.key === ' ') {
+      e.preventDefault();
+      heroTap.click();
+    }
+  });
+
+  // Optional: ensure first tap on mobile works
+  heroTap.addEventListener('touchstart', () => {}, { once: true });
 
 
   /* -------------------------
