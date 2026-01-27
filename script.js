@@ -1,6 +1,4 @@
 // Main interactions for the birthday site
-// Updated: keeps confetti + floating balloons, cartoon cake flame works as before,
-// playlist persistent player remains unchanged.
 
 document.addEventListener('DOMContentLoaded', ()=>{
 
@@ -15,8 +13,8 @@ document.addEventListener('DOMContentLoaded', ()=>{
   function showPage(id){
     pages.forEach(p=> p.id===id ? p.classList.add('active') : p.classList.remove('active'));
     navItems.forEach(n=> n.classList.toggle('active', n.dataset.target===id));
-    // stop video if switching away
-    if (id !== 'playlist') hidePlayer();
+    // special: stop video if switching
+    closeVideo();
   }
 
   navItems.forEach(btn=>{
@@ -52,17 +50,13 @@ document.addEventListener('DOMContentLoaded', ()=>{
   const cakeMessage = document.getElementById('cakeMessage');
   const closeBtn = cakeMessage.querySelector('.closeBtn');
 
-  if (flameGroup) {
-    flameGroup.addEventListener('click', ()=> {
-      cakeMessage.classList.remove('hidden');
-    });
-    flameGroup.addEventListener('keydown', (e)=> {
-      if (e.key==='Enter' || e.key===' ') { e.preventDefault(); flameGroup.click(); }
-    });
-  }
-  if (closeBtn) {
-    closeBtn.addEventListener('click', ()=> cakeMessage.classList.add('hidden'));
-  }
+  flameGroup.addEventListener('click', ()=> {
+    cakeMessage.classList.remove('hidden');
+  });
+  flameGroup.addEventListener('keydown', (e)=> {
+    if (e.key==='Enter' || e.key===' ') { e.preventDefault(); flameGroup.click(); }
+  });
+  closeBtn.addEventListener('click', ()=> cakeMessage.classList.add('hidden'));
 
   // --- Message typing animation ---
   const textEl = document.getElementById('typeText');
@@ -108,59 +102,42 @@ document.addEventListener('DOMContentLoaded', ()=>{
   });
   observer.observe(document.querySelector('main'), {attributes:true, subtree:true, attributeFilter:['class']});
 
-  // --- Playlist: persistent player area (unchanged behavior) ---
-  const playlistItems = document.querySelectorAll('.playlist-item');
-  const playerWrap = document.getElementById('playlistPlayer');
-  const playerIframe = document.getElementById('playerIframe');
-  const playerTitle = document.getElementById('playerTitle');
-  const playerClose = document.getElementById('playerClose');
-  const playlistList = document.getElementById('playlistList');
+  // Playlist: clicking list items opens video overlay
+  const playlistItems = document.querySelectorAll('.playlist li');
+  const videoScreen = document.getElementById('videoScreen');
+  const videoFrame = document.getElementById('videoFrame');
+  const closeVideoBtn = document.getElementById('closeVideo');
 
-  function showPlayer(title, url){
-    if (!playerWrap || !playerIframe) return;
-    playerTitle.textContent = title || 'Playing';
-    playerIframe.src = url + '?autoplay=1&rel=0';
-    playerWrap.setAttribute('aria-hidden','false');
-    // ensure visible on mobile: scroll player into view
-    playerWrap.scrollIntoView({behavior:'smooth', block:'center'});
-    playerClose.focus();
+  function openVideo(url){
+    videoFrame.src = url + "?autoplay=1&rel=0";
+    videoScreen.classList.remove('hidden');
+    videoScreen.setAttribute('aria-hidden','false');
   }
-
-  function hidePlayer(){
-    if (!playerWrap || !playerIframe) return;
-    playerWrap.setAttribute('aria-hidden','true');
-    // stop playback
-    try { playerIframe.src = ''; } catch(e){}
+  function closeVideo(){
+    if (videoScreen) {
+      videoScreen.classList.add('hidden');
+      videoFrame.src = '';
+      videoScreen.setAttribute('aria-hidden','true');
+    }
   }
 
   playlistItems.forEach(li=>{
-    li.addEventListener('click', ()=> {
-      const url = li.dataset.youtube;
-      const title = li.textContent.trim();
-      showPlayer(title, url);
-    });
-    // keyboard support
-    li.addEventListener('keydown', (e)=>{
-      if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); li.click(); }
-    });
+    li.addEventListener('click', ()=> openVideo(li.dataset.youtube));
+  });
+  closeVideoBtn.addEventListener('click', closeVideo);
+
+  // Close video on background click
+  videoScreen.addEventListener('click', (e)=>{
+    if (e.target === videoScreen) closeVideo();
   });
 
-  if (playerClose) {
-    playerClose.addEventListener('click', ()=> {
-      hidePlayer();
-      // return focus to list for accessibility
-      const first = playlistList.querySelector('.playlist-item');
-      if (first) first.focus();
-    });
-  }
-
-  // --- Confetti implementation (lightweight) ---
+  // Confetti implementation (lightweight)
   const confettiCanvas = document.getElementById('confetti');
-  const ctx = confettiCanvas ? confettiCanvas.getContext('2d') : null;
+  const ctx = confettiCanvas.getContext('2d');
   let confettiPieces = [];
   let confettiRunning = false;
 
-  function resizeCanvas(){ if (!confettiCanvas) return; confettiCanvas.width = window.innerWidth; confettiCanvas.height = window.innerHeight; }
+  function resizeCanvas(){ confettiCanvas.width = window.innerWidth; confettiCanvas.height = window.innerHeight; }
   window.addEventListener('resize', resizeCanvas);
   resizeCanvas();
 
@@ -168,25 +145,23 @@ document.addEventListener('DOMContentLoaded', ()=>{
 
   function createConfetti(){
     confettiPieces = [];
-    const count = 100;
-    const colors = ['#ff7fbf','#ffd1e6','#cbb0ff','#ffe89a','#ffb4c6','#ff9db7'];
+    const count = 80;
     for (let i=0;i<count;i++){
       confettiPieces.push({
         x: random(0, confettiCanvas.width),
         y: random(-confettiCanvas.height, 0),
         w: random(6,12),
         h: random(8,18),
-        color: colors[Math.floor(Math.random()*colors.length)],
+        color: ['#ff7fbf','#ffd1e6','#cbb0ff','#ffe89a'][Math.floor(Math.random()*4)],
         rot: random(0,360),
-        velY: random(1.5,5),
-        velX: random(-1.5,1.5),
-        rotSpeed: random(-8,8),
+        velY: random(1,4),
+        velX: random(-1,1),
+        rotSpeed: random(-6,6),
       });
     }
   }
 
   function drawConfetti(){
-    if (!ctx) return;
     ctx.clearRect(0,0,confettiCanvas.width, confettiCanvas.height);
     confettiPieces.forEach(p=>{
       ctx.save();
@@ -198,10 +173,10 @@ document.addEventListener('DOMContentLoaded', ()=>{
 
       p.x += p.velX;
       p.y += p.velY;
-      p.rot += p.rotSpeed * 0.6;
+      p.rot += p.rotSpeed * 0.5;
 
-      if (p.y > confettiCanvas.height + 40) {
-        p.y = -20;
+      if (p.y > confettiCanvas.height + 20) {
+        p.y = -10;
         p.x = random(0, confettiCanvas.width);
       }
     });
@@ -214,14 +189,16 @@ document.addEventListener('DOMContentLoaded', ()=>{
   }
 
   function startConfetti(){
-    if (!ctx || confettiRunning) return;
+    if (confettiRunning) return;
     createConfetti();
     confettiRunning = true;
     animateConfetti();
-    setTimeout(()=> { stopConfetti(); }, 9000);
+    setTimeout(()=> {
+      stopConfetti();
+    }, 8000);
   }
   function stopConfetti(){
-    if (!ctx || !confettiRunning) return;
+    if (!confettiRunning) return;
     confettiRunning = false;
     cancelAnimationFrame(confettiTimer);
     confettiTimer = null;
