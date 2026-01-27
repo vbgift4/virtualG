@@ -114,34 +114,40 @@ main{flex:1}
 .flower-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-top:12px}
 .flower-grid img{width:100%;height:140px;object-fit:cover;border-radius:10px;box-shadow:0 6px 14px rgba(0,0,0,0.06)}
 
-/* Playlist */
+/* Playlist items */
 .playlist{list-style:none;padding:0;margin:12px 0}
 .playlist li{padding:12px;border-radius:8px;background:rgba(255,255,255,0.85);margin-bottom:8px;cursor:pointer;box-shadow:0 6px 12px rgba(0,0,0,0.04)}
 .playlist li:hover{background:var(--pink)}
 
-/* Video overlay */
-.video-screen{
+/* --- Dynamic top-level modal for video (appended to <body>) --- */
+.video-modal{
   position:fixed;
-  left:0;right:0;top:0;bottom:0;
+  inset:0;
   display:flex;
   align-items:center;
   justify-content:center;
   background:rgba(0,0,0,0.6);
-  z-index:70;
+  z-index:99999;
   -webkit-overflow-scrolling:touch;
 }
-.video-screen iframe{
+.video-modal__frame{
   width:min(900px,95%);
   height:min(560px,66%);
   border-radius:10px;
-  border:0;
-  z-index:10; /* keep iframe under the close button */
+  overflow:hidden;
   background:#000;
+  box-shadow:0 30px 80px rgba(0,0,0,0.6);
+}
+.video-modal__frame iframe{
+  width:100%;
+  height:100%;
+  border:0;
+  display:block;
 }
 
-/* Close button: larger tap target and above iframe */
-.closeVideo{
-  position:absolute;
+/* Close button placed at root level inside modal so it always receives clicks */
+.video-modal__close{
+  position:fixed;
   top:12px;
   right:12px;
   background:rgba(0,0,0,0.6);
@@ -155,11 +161,10 @@ main{flex:1}
   align-items:center;
   justify-content:center;
   cursor:pointer;
-  z-index:9999; /* ensure it's above the iframe */
+  z-index:100000; /* highest */
   box-shadow:0 6px 14px rgba(0,0,0,0.35);
-  pointer-events:auto;
 }
-.closeVideo:focus{outline:3px solid rgba(255,255,255,0.12)}
+.video-modal__close:focus{outline:3px solid rgba(255,255,255,0.12)}
 
 /* Footer */
 .footer{text-align:center;padding:12px 6px;color:#7a4a61;font-size:.95rem}
@@ -176,7 +181,7 @@ main{flex:1}
   .nav-right{gap:4px}
   .nav-item span{display:none}
   .logo-text{font-size:1rem}
-  .closeVideo{width:40px;height:40px;font-size:18px;top:8px;right:8px}
+  .video-modal__close{width:40px;height:40px;font-size:18px;top:8px;right:8px}
 }
 @media (max-width:520px){
   .flower-grid{grid-template-columns:1fr;grid-auto-rows:150px}
