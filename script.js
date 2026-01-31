@@ -77,15 +77,15 @@ document.addEventListener('DOMContentLoaded', ()=>{
   if(closeBtn) closeBtn.addEventListener('click', ()=>{ cakeMessage.classList.add('hidden'); addClickFeedback(closeBtn); });
 
   // -------------------------
-  // Typing animation + paper crumple + "I love you 💖" + hearts
+  // Typing animation + paper crumple + "I LOVE YOU ❤️" + hearts
   // -------------------------
   const textEl = document.getElementById('typeText');
   const pencil = document.getElementById('pencilSvg');
   const paper = document.querySelector('.paper');
-  const finalText = document.getElementById('finalText');
+  const iloveyou = document.getElementById('iloveyou');
 
   const firstMessage = "Dear you,\n\nToday I celebrate you — your smile, your warmth,\nand every little thing that makes you special.\n\nLove you always.";
-  const loveMessage = "I love you 💖";
+  const loveMessage = "I LOVE YOU ❤️";
 
   function typeWriter(msg,target,callback){
     target.textContent='';
@@ -129,15 +129,30 @@ document.addEventListener('DOMContentLoaded', ()=>{
     }
   }
 
+  // Observe when message page becomes active
   const observer = new MutationObserver(()=>{
     const active = document.querySelector('.page.active');
     if(active && active.id==='message' && textEl.textContent.trim()===''){
+      // Reset I LOVE YOU display
+      if(iloveyou){
+        iloveyou.style.display='none';
+        iloveyou.style.opacity=0;
+      }
+
       typeWriter(firstMessage,textEl,()=>{
         setTimeout(()=>{
           paper.classList.add('crumbled');
           paper.addEventListener('animationend',()=>{
+            // Hide typed text
             textEl.textContent='';
-            finalText.textContent=loveMessage;
+
+            // SHOW FULL-PAGE I LOVE YOU ❤️
+            if(iloveyou){
+              iloveyou.style.display='flex';
+              iloveyou.style.opacity=1;
+            }
+
+            // Hearts animation
             createHearts(40);
           },{once:true});
         },1000);
