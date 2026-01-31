@@ -129,33 +129,30 @@ document.addEventListener('DOMContentLoaded', ()=>{
     }
   }
 
-  // Observe when message page becomes active
   const observer = new MutationObserver(()=>{
     const active = document.querySelector('.page.active');
     if(active && active.id==='message' && textEl.textContent.trim()===''){
-      // Reset I LOVE YOU display
-      if(iloveyou){
-        iloveyou.style.display='none';
-        iloveyou.style.opacity=0;
-      }
-
+      // Hide "I LOVE YOU" initially
+      if(iloveyou) iloveyou.style.display = 'none';
       typeWriter(firstMessage,textEl,()=>{
         setTimeout(()=>{
+          // Crumple animation
           paper.classList.add('crumbled');
-          paper.addEventListener('animationend',()=>{
-            // Hide typed text
+          paper.addEventListener('animationend', ()=>{
             textEl.textContent='';
-
-            // SHOW FULL-PAGE I LOVE YOU ❤️
             if(iloveyou){
               iloveyou.style.display='flex';
-              iloveyou.style.opacity=1;
+              iloveyou.style.justifyContent='center';
+              iloveyou.style.alignItems='center';
+              iloveyou.style.fontSize='2.2rem';
+              iloveyou.style.fontWeight='800';
+              iloveyou.style.textAlign='center';
+              iloveyou.style.margin='0 auto';
+              iloveyou.style.opacity='1';
             }
-
-            // Hearts animation
             createHearts(40);
-          },{once:true});
-        },1000);
+          }, {once:true});
+        }, 1000);
       });
     }
   });
