@@ -1,4 +1,3 @@
-
 // Main interactions: nav, confetti, balloons, cake flame popup, message typing, playlist, lazy-load, collapsibles
 document.addEventListener('DOMContentLoaded', ()=>{
 
