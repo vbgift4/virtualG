@@ -19,10 +19,14 @@ document.addEventListener('DOMContentLoaded', ()=>{
     b.addEventListener('keydown', (e)=>{ if (e.key==='Enter'||e.key===' ') addClickFeedback(b); });
   });
 
-  function scrollMainTop(){
-    if (!mainEl) return;
-    try { mainEl.scrollTo({ top:0, behavior:'smooth' }); }
-    catch(e){ mainEl.scrollTop=0; }
+  // -------------------------
+  // Prevent main scroll on mobile
+  // -------------------------
+  function disablePageScroll(){
+    document.body.style.overflow = 'hidden';
+  }
+  function enablePageScroll(){
+    document.body.style.overflow = '';
   }
 
   // -------------------------
@@ -92,9 +96,6 @@ document.addEventListener('DOMContentLoaded', ()=>{
     // toggle nav active state
     navItems.forEach(n => n.classList.toggle('active', n.dataset.target === id));
 
-    // scroll to top
-    scrollMainTop();
-
     // deactivate current page, activate target
     pages.forEach(p => {
       if (p.id === id) p.classList.add('active');
@@ -103,6 +104,10 @@ document.addEventListener('DOMContentLoaded', ()=>{
 
     // reset message scene if leaving message page
     if (id !== 'message') resetMessageScene();
+
+    // disable scrolling on mobile for all pages
+    if(window.innerWidth <= 900) disablePageScroll();
+    else enablePageScroll();
 
     // stop/start confetti & audio
     const current = document.querySelector('.page.active');
