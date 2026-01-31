@@ -121,18 +121,14 @@ document.addEventListener('DOMContentLoaded', ()=>{
       typingInProgress = true;
       setTimeout(() => {
         typeWriter(firstMessage, textEl, () => {
-          setTimeout(() => {
-            paper.classList.add('crumbled');
-            paper.addEventListener(
-              'animationend',
-              () => {
-                textEl.textContent = '';
-                iloveyou.classList.add('show');
-                createHearts(40);
-              },
-              { once: true }
-            );
-          }, 1000);
+          // After typing finishes, start crumple animation
+          if (paper) paper.classList.add('crumbled');
+
+          // Listen for animation end once
+          if (paper) paper.addEventListener('animationend', () => {
+            createHearts(40);
+            if (iloveyou) iloveyou.classList.add('show');
+          }, { once: true });
         });
       }, 150);
     }
@@ -142,7 +138,7 @@ document.addEventListener('DOMContentLoaded', ()=>{
     btn.addEventListener('click', ()=> showPage(btn.dataset.target));
     btn.addEventListener('keydown', (e)=>{ if(e.key==='Enter'||e.key===' ') { e.preventDefault(); btn.click(); }});
   });
-  logoBtn.addEventListener('click', ()=> showPage('home'));
+  if (logoBtn) logoBtn.addEventListener('click', ()=> showPage('home'));
 
   // -------------------------
   // Homepage audio and hero tap
@@ -151,15 +147,17 @@ document.addEventListener('DOMContentLoaded', ()=>{
   function startHomepageAudio(){ if(!bgAudio) return; bgAudio.play().then(()=>{ homepageAudioPlaying=true; }).catch(()=>{}); }
   function pauseHomepageAudio(){ if(!bgAudio) return; bgAudio.pause(); homepageAudioPlaying=false; }
 
-  heroTap.addEventListener('click', ()=>{
-    const home = document.getElementById('home');
-    if(!home || !home.classList.contains('active')) return;
-    if(homepageAudioPlaying) pauseHomepageAudio();
-    else startHomepageAudio();
-    startConfetti();
-  });
-  heroTap.addEventListener('keydown',(e)=>{ if(e.key==='Enter'||e.key===' '){ e.preventDefault(); heroTap.click(); }});
-  heroTap.addEventListener('touchstart',()=>{}, {once:true});
+  if (heroTap) {
+    heroTap.addEventListener('click', ()=>{
+      const home = document.getElementById('home');
+      if(!home || !home.classList.contains('active')) return;
+      if(homepageAudioPlaying) pauseHomepageAudio();
+      else startHomepageAudio();
+      startConfetti();
+    });
+    heroTap.addEventListener('keydown',(e)=>{ if(e.key==='Enter'||e.key===' '){ e.preventDefault(); heroTap.click(); }});
+    heroTap.addEventListener('touchstart',()=>{}, {once:true});
+  }
 
   // -------------------------
   // Cake flame
