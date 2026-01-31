@@ -78,29 +78,36 @@ main{flex:1;padding-top:84px;overflow:auto}
 
 /* Cake Section */
 .cake-wrap {
-  display:flex;
-  justify-content:center;
-  padding:10px;
-  position: relative; /* required for flame overlay */
-}
-#cake-img {
-  width:280px;
-  max-width:90%;
-  display:block;
-  border-radius:12px;
-  box-shadow:0 8px 20px rgba(0,0,0,0.08);
-  position: relative;
+  display: flex;
+  justify-content: center;
+  position: relative; /* needed for flame positioning */
+  padding: 10px;
 }
 
-/* Flame clickable area over PNG cake */
+#cake-img {
+  width: 280px;
+  height: auto;
+  max-height: calc(100vh - 120px);
+  border-radius: 10px;
+}
+
+/* Flame overlay */
 #flame {
   position: absolute;
-  top:8%;      /* adjust to align with candle */
-  left:46%;    /* adjust to align with candle */
-  width:8%;
-  height:12%;
-  cursor:pointer;
+  top: 12%;      /* adjust based on cake image */
+  left: 50%;
+  transform: translateX(-50%);
+  width: 40px;
+  height: 40px;
+  cursor: pointer;
+  background: radial-gradient(circle at center, #ff9f3f 0%, #ff6b00 80%);
+  border-radius: 50%;
+  box-shadow: 0 0 10px #ff6b00, 0 0 20px #ff9f3f;
 }
+#flame:active {
+  transform: translateX(-50%) scale(0.9);
+}
+
 
 .popup{position:fixed;left:0;right:0;top:0;bottom:0;display:flex;align-items:center;justify-content:center;z-index:60}
 .popup-inner{background:white;padding:14px;border-radius:10px;box-shadow:0 20px 40px rgba(0,0,0,0.18)}
