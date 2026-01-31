@@ -283,8 +283,9 @@ main{flex:1;padding-top:84px;overflow:auto}
   animation: crumple 1s ease-in forwards;
   transform-origin: center center;
 }
+/* I LOVE YOU text */
 #iloveyou {
-  display: none; /* hidden by default */
+  display: none; /* hidden initially */
   position: absolute;
   top: 50%;
   left: 50%;
@@ -295,11 +296,21 @@ main{flex:1;padding-top:84px;overflow:auto}
   text-align: center;
   z-index: 20;
   opacity: 0;
-  animation: fadeIn 1.2s forwards;
   pointer-events: none;
+  animation: fadeIn 1.2s forwards;
 }
 
 @keyframes fadeIn {
   0% { opacity: 0; transform: translate(-50%, -45%) scale(0.8); }
   100% { opacity: 1; transform: translate(-50%, -50%) scale(1); }
+}
+
+/* Optional: make it pulse */
+#iloveyou.pulse {
+  animation: pulse 1s infinite alternate;
+}
+
+@keyframes pulse {
+  0% { transform: translate(-50%, -50%) scale(1); }
+  100% { transform: translate(-50%, -50%) scale(1.08); }
 }
