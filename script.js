@@ -25,7 +25,11 @@ document.addEventListener('DOMContentLoaded', ()=>{
     catch(e){ mainEl.scrollTop=0; }
   }
 
-  function showPage(id){
+  function showPage(id)
+  if (id !== 'message') {
+  typingInProgress = false;
+}
+{
     navItems.forEach(n => n.classList.toggle('active', n.dataset.target===id));
     scrollMainTop();
     const current = document.querySelector('.page.active');
@@ -124,24 +128,60 @@ document.addEventListener('DOMContentLoaded', ()=>{
       setTimeout(()=>heart.remove(),3100);
     }
   }
+let typingInProgress = false;
+
+function resetMessageScene() {
+  typingInProgress = false;
+
+  // reset text
+  textEl.textContent = '';
+
+  // reset paper animation
+  paper.classList.remove('crumbled');
+
+  // hide I LOVE YOU
+  iloveyou.classList.remove('show');
+
+  // remove leftover hearts
+  paper.querySelectorAll('.heart').forEach(h => h.remove());
+}
 
   // Start typing when user navigates to message page
-  const observer = new MutationObserver(()=>{
-    const active = document.querySelector('.page.active');
-    if(active && active.id==='message' && textEl.textContent.trim()===''){
-      typeWriter(firstMessage, textEl, () => {
-        setTimeout(()=>{
-          paper.classList.add('crumbled');
-          paper.addEventListener('animationend', ()=>{
-            textEl.textContent='';
-            iloveyou.classList.add('show'); // show the I LOVE YOU
+ const observer = new MutationObserver(() => {
+  const active = document.querySelector('.page.active');
+  if (!active || active.id !== 'message') return;
+  // prevent double start
+  if (typingInProgress) return;
+  typingInProgress = true;
+
+  resetMessageScene();
+
+  // small delay so reset finishes visually
+  setTimeout(() => {
+    typeWriter(firstMessage, textEl, () => {
+      setTimeout(() => {
+        paper.classList.add('crumbled');
+
+        paper.addEventListener(
+          'animationend',
+          () => {
+            textEl.textContent = '';
+            iloveyou.classList.add('show');
             createHearts(40);
-          }, {once:true});
-        }, 1000);
-      });
-    }
-  });
-  observer.observe(document.querySelector('main'), {attributes:true, subtree:true, attributeFilter:['class']});
+          },
+          { once: true }
+        );
+      }, 1000);
+    });
+  }, 150);
+});
+
+observer.observe(document.querySelector('main'), {
+  attributes: true,
+  subtree: true,
+  attributeFilter: ['class']
+});
+
 
   // -------------------------
   // Playlist player
