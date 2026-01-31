@@ -36,26 +36,18 @@ const firstMessage = `Hi Baby,
 
 Happy Birthday!
 
-I may not always find the perfect words,  
-but I hope you feel just how much you mean to me.
+I may not always find the perfect words, but I hope you feel just how much you mean to me.
 
-You deserve a life filled with happiness,  
-so never let sadness or stress dim your light—  
-I know you have the strength to rise above anything.  
-Ikaw na yan eh! 😉
+You deserve a life filled with happiness, so never let sadness or stress dim your light—I know you have the strength to rise above anything. Ikaw na yan eh! 😉
 
-Always remember that I am here for you,  
-cheering you on and believing in you,  
-no matter where life takes you.
+Always remember that I am here for you, cheering you on and believing in you, no matter where life takes you.
 
-My wish for you today is simple yet endless:  
-good health, true happiness,  
-and all the love your heart can hold.
+My wish for you today is simple yet endless: good health, true happiness, and all the love your heart can hold.
 
 You truly deserve the world,
 
-and I promise to remind you of that  
-every single day. 💖`;
+and I promise to remind you of that every single day. 💖`;
+
 
   let typingInProgress = false;
 
