@@ -1,3 +1,4 @@
+
 :root{
   --bg-top: #ffd7e6;
   --bg-bottom: #ffeef6;
@@ -282,4 +283,35 @@ main{flex:1;padding-top:84px;overflow:auto}
 .paper.crumbled {
   animation: crumple 1s ease-in forwards;
   transform-origin: center center;
+}
+/* I LOVE YOU text */
+/* I LOVE YOU ❤️ animation */
+#iloveyou {
+  display: none;          /* hidden at first */
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%) scale(0);
+  font-size: 4rem;
+  font-weight: 900;
+  color: #e91e63;
+  text-align: center;
+  z-index: 100;
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity 0.6s ease, transform 0.6s ease;
+}
+
+/* when visible, scale up */
+#iloveyou.show {
+  display: flex;
+  opacity: 1;
+  transform: translate(-50%, -50%) scale(1.2);
+  animation: pulse 1s ease forwards;
+}
+
+@keyframes pulse {
+  0% { transform: translate(-50%, -50%) scale(0); opacity: 0; }
+  50% { transform: translate(-50%, -50%) scale(1.4); opacity: 1; }
+  100% { transform: translate(-50%, -50%) scale(1.2); opacity: 1; }
 }
