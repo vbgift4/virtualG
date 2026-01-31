@@ -25,69 +25,24 @@ document.addEventListener('DOMContentLoaded', ()=>{
     catch(e){ mainEl.scrollTop=0; }
   }
 
-  function showPage(id)
-  if (id !== 'message') {
-  typingInProgress = false;
-}
-{
-    navItems.forEach(n => n.classList.toggle('active', n.dataset.target===id));
-    scrollMainTop();
-    const current = document.querySelector('.page.active');
-    if(current && current.id==='home' && id!=='home'){
-      stopConfetti();
-      pauseHomepageAudio();
-      current.classList.remove('active');
-      setTimeout(()=>{ pages.forEach(p=> p.id===id? p.classList.add('active') : p.classList.remove('active')); scrollMainTop(); },300);
-    } else if(id==='home'){
-      pages.forEach(p=> p.id===id? p.classList.add('active') : p.classList.remove('active'));
-      setTimeout(()=> startConfetti(),80);
-      scrollMainTop();
-    } else {
-      pages.forEach(p=> p.id===id? p.classList.add('active') : p.classList.remove('active'));
-      stopConfetti();
-      pauseHomepageAudio();
-      scrollMainTop();
-    }
-  }
-
-  navItems.forEach(btn=>{
-    btn.addEventListener('click', ()=> showPage(btn.dataset.target));
-    btn.addEventListener('keydown', (e)=>{ if(e.key==='Enter'||e.key===' ') { e.preventDefault(); btn.click(); }});
-  });
-  logoBtn.addEventListener('click', ()=> showPage('home'));
-
-  let homepageAudioPlaying = false;
-  function startHomepageAudio(){ if(!bgAudio) return; bgAudio.play().then(()=>{ homepageAudioPlaying=true; }).catch(()=>{}); }
-  function pauseHomepageAudio(){ if(!bgAudio) return; bgAudio.pause(); homepageAudioPlaying=false; }
-
-  heroTap.addEventListener('click', ()=>{
-    const home = document.getElementById('home');
-    if(!home || !home.classList.contains('active')) return;
-    if(homepageAudioPlaying) pauseHomepageAudio();
-    else startHomepageAudio();
-    startConfetti();
-  });
-  heroTap.addEventListener('keydown',(e)=>{ if(e.key==='Enter'||e.key===' '){ e.preventDefault(); heroTap.click(); }});
-  heroTap.addEventListener('touchstart',()=>{}, {once:true});
-
-  // Cake flame
-  const flameDiv = document.getElementById('flame');
-  const cakeMessage = document.getElementById('cakeMessage');
-  const closeBtn = cakeMessage ? cakeMessage.querySelector('.closeBtn') : null;
-  if(flameDiv){
-    flameDiv.addEventListener('click', ()=> { if(cakeMessage) cakeMessage.classList.remove('hidden'); });
-    flameDiv.addEventListener('keydown', (e)=>{ if(e.key==='Enter'||e.key===' '){ e.preventDefault(); flameDiv.click(); }});
-  }
-  if(closeBtn) closeBtn.addEventListener('click', ()=>{ cakeMessage.classList.add('hidden'); addClickFeedback(closeBtn); });
-
   // -------------------------
-  // Typing animation + paper crumple + "I LOVE YOU ❤️" + hearts
+  // Message typing animation
   // -------------------------
   const textEl = document.getElementById('typeText');
   const paper = document.querySelector('.paper');
   const iloveyou = document.getElementById('iloveyou');
 
   const firstMessage = "Dear you,\n\nToday I celebrate you — your smile, your warmth,\nand every little thing that makes you special.\n\nLove you always.";
+
+  let typingInProgress = false;
+
+  function resetMessageScene() {
+    typingInProgress = false;
+    if (textEl) textEl.textContent = '';
+    if (paper) paper.classList.remove('crumbled');
+    if (iloveyou) iloveyou.classList.remove('show');
+    if (paper) paper.querySelectorAll('.heart').forEach(h => h.remove());
+  }
 
   function typeWriter(msg, target, callback){
     target.textContent = '';
@@ -128,60 +83,95 @@ document.addEventListener('DOMContentLoaded', ()=>{
       setTimeout(()=>heart.remove(),3100);
     }
   }
-let typingInProgress = false;
 
-function resetMessageScene() {
-  typingInProgress = false;
+  // -------------------------
+  // Fixed showPage function
+  // -------------------------
+  function showPage(id) {
+    // toggle nav active state
+    navItems.forEach(n => n.classList.toggle('active', n.dataset.target === id));
 
-  // reset text
-  textEl.textContent = '';
+    // scroll to top
+    scrollMainTop();
 
-  // reset paper animation
-  paper.classList.remove('crumbled');
-
-  // hide I LOVE YOU
-  iloveyou.classList.remove('show');
-
-  // remove leftover hearts
-  paper.querySelectorAll('.heart').forEach(h => h.remove());
-}
-
-  // Start typing when user navigates to message page
- const observer = new MutationObserver(() => {
-  const active = document.querySelector('.page.active');
-  if (!active || active.id !== 'message') return;
-  // prevent double start
-  if (typingInProgress) return;
-  typingInProgress = true;
-
-  resetMessageScene();
-
-  // small delay so reset finishes visually
-  setTimeout(() => {
-    typeWriter(firstMessage, textEl, () => {
-      setTimeout(() => {
-        paper.classList.add('crumbled');
-
-        paper.addEventListener(
-          'animationend',
-          () => {
-            textEl.textContent = '';
-            iloveyou.classList.add('show');
-            createHearts(40);
-          },
-          { once: true }
-        );
-      }, 1000);
+    // deactivate current page, activate target
+    pages.forEach(p => {
+      if (p.id === id) p.classList.add('active');
+      else p.classList.remove('active');
     });
-  }, 150);
-});
 
-observer.observe(document.querySelector('main'), {
-  attributes: true,
-  subtree: true,
-  attributeFilter: ['class']
-});
+    // reset message scene if leaving message page
+    if (id !== 'message') resetMessageScene();
 
+    // stop/start confetti & audio
+    const current = document.querySelector('.page.active');
+    if (current && current.id === 'home' && id !== 'home') {
+      stopConfetti();
+      pauseHomepageAudio();
+    } else if (id === 'home') {
+      setTimeout(startConfetti, 80);
+    } else {
+      stopConfetti();
+      pauseHomepageAudio();
+    }
+
+    // Start typing animation if opening message page
+    if (id === 'message' && !typingInProgress) {
+      resetMessageScene();
+      typingInProgress = true;
+      setTimeout(() => {
+        typeWriter(firstMessage, textEl, () => {
+          setTimeout(() => {
+            paper.classList.add('crumbled');
+            paper.addEventListener(
+              'animationend',
+              () => {
+                textEl.textContent = '';
+                iloveyou.classList.add('show');
+                createHearts(40);
+              },
+              { once: true }
+            );
+          }, 1000);
+        });
+      }, 150);
+    }
+  }
+
+  navItems.forEach(btn=>{
+    btn.addEventListener('click', ()=> showPage(btn.dataset.target));
+    btn.addEventListener('keydown', (e)=>{ if(e.key==='Enter'||e.key===' ') { e.preventDefault(); btn.click(); }});
+  });
+  logoBtn.addEventListener('click', ()=> showPage('home'));
+
+  // -------------------------
+  // Homepage audio and hero tap
+  // -------------------------
+  let homepageAudioPlaying = false;
+  function startHomepageAudio(){ if(!bgAudio) return; bgAudio.play().then(()=>{ homepageAudioPlaying=true; }).catch(()=>{}); }
+  function pauseHomepageAudio(){ if(!bgAudio) return; bgAudio.pause(); homepageAudioPlaying=false; }
+
+  heroTap.addEventListener('click', ()=>{
+    const home = document.getElementById('home');
+    if(!home || !home.classList.contains('active')) return;
+    if(homepageAudioPlaying) pauseHomepageAudio();
+    else startHomepageAudio();
+    startConfetti();
+  });
+  heroTap.addEventListener('keydown',(e)=>{ if(e.key==='Enter'||e.key===' '){ e.preventDefault(); heroTap.click(); }});
+  heroTap.addEventListener('touchstart',()=>{}, {once:true});
+
+  // -------------------------
+  // Cake flame
+  // -------------------------
+  const flameDiv = document.getElementById('flame');
+  const cakeMessage = document.getElementById('cakeMessage');
+  const closeBtn = cakeMessage ? cakeMessage.querySelector('.closeBtn') : null;
+  if(flameDiv){
+    flameDiv.addEventListener('click', ()=> { if(cakeMessage) cakeMessage.classList.remove('hidden'); });
+    flameDiv.addEventListener('keydown', (e)=>{ if(e.key==='Enter'||e.key===' '){ e.preventDefault(); flameDiv.click(); }});
+  }
+  if(closeBtn) closeBtn.addEventListener('click', ()=>{ cakeMessage.classList.add('hidden'); addClickFeedback(closeBtn); });
 
   // -------------------------
   // Playlist player
