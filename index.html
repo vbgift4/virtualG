@@ -94,25 +94,29 @@
 
 
 
-    <!-- MESSAGE -->
-    <section id="message" class="page">
-      <div class="section-inner">
-        <h2 class="section-title">Messages</h2>
-        <p class="section-sub">A little note written just for you.</p>
+   <!-- MESSAGE -->
+<section id="message" class="page">
+  <div class="section-inner">
+    <h2 class="section-title">Messages</h2>
+    <p class="section-sub">A little note written just for you.</p>
 
-        <div class="paper">
-          <div class="written" id="typeText"></div>
-          <svg class="pencil" viewBox="0 0 64 64" id="pencilSvg">
-            <path d="M2 54l10 10 46-46-10-10L2 54z" fill="#d8a24a"/>
-            <path d="M52 6l6 6-6 6-6-6 6-6z" fill="#ffd1a8"/>
-          </svg>
-        </div>
+    <!-- Paper with typing animation -->
+    <div class="paper">
+      <div class="written" id="typeText"></div>
+      <svg class="pencil" viewBox="0 0 64 64" id="pencilSvg">
+        <path d="M2 54l10 10 46-46-10-10L2 54z" fill="#d8a24a"/>
+        <path d="M52 6l6 6-6 6-6-6 6-6z" fill="#ffd1a8"/>
+      </svg>
+    </div>
 
-        <div id="messageFollow" class="follow hidden">
-          <p>And one more thing — you're the best part of my every day. 💖</p>
-        </div>
-      </div>
-    </section>
+    <!-- Final text after crumple -->
+    <div id="finalText" class="final-text"></div>
+
+    <!-- Hearts container -->
+    <div id="heartsContainer"></div>
+  </div>
+</section>
+
 
     <!-- FLOWERS -->
     <section id="flowers" class="page">
