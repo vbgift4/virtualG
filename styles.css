@@ -8,6 +8,7 @@
   --title-color: #8b0000;
   --max-page-height-offset: 120px;
 }
+
 *{box-sizing:border-box}
 html,body{height:100%;margin:0}
 body{
@@ -22,7 +23,7 @@ body{
   line-height:1.35;
 }
 
-/* NAV - fixed */
+/* NAV */
 .nav{
   position:fixed;
   top:0;left:0;right:0;height:64px;z-index:120;
@@ -40,10 +41,10 @@ body{
 .nav-item.active{background:linear-gradient(90deg,var(--violet-start), var(--violet-end));color:white;transform:translateY(-1px)}
 button.clicked{background:linear-gradient(90deg,var(--violet-start), var(--violet-end)) !important;color:white !important}
 
-/* MAIN: reserve header space */
+/* MAIN */
 main{flex:1;padding-top:84px;overflow:auto}
 
-/* Pages: constrain height and internal scrolling; reduced padding */
+/* Pages */
 .page{display:block;padding:14px;max-width:980px;margin:14px auto;transition:opacity .28s ease, transform .28s ease;max-height: calc(100vh - var(--max-page-height-offset));overflow:auto;border-radius:12px}
 .page:not(.active){opacity:0;pointer-events:none;transform:translateY(6px)}
 .page.active{opacity:1;pointer-events:auto;transform:translateY(0)}
@@ -51,12 +52,12 @@ main{flex:1;padding-top:84px;overflow:auto}
 .title{font-size:2.4rem;margin:8px 0 6px;text-align:center;color:var(--title-color);font-weight:800;letter-spacing:1px}
 .sub{font-size:1rem;margin:0 0 10px;text-align:center;color:#6b2350}
 
-/* Hero: fully fit on mobile */
+/* Hero */
 .hero{
   position:relative;display:flex;flex-direction:column;align-items:center;justify-content:center;
   gap:6px;background:linear-gradient(180deg, rgba(255,245,250,0.6), rgba(255,240,245,0.4));
   padding:18px 12px;border-radius:10px;cursor:pointer;user-select:none;
-  min-height:calc(100vh - 84px); /* full viewport minus nav */
+  min-height:calc(100vh - 84px);
   overflow:hidden;
 }
 .balloons{width:140px;max-width:40%;border-radius:12px;box-shadow:0 8px 18px rgba(0,0,0,0.08)}
@@ -80,34 +81,17 @@ main{flex:1;padding-top:84px;overflow:auto}
 .cake-wrap {
   display: flex;
   justify-content: center;
-  position: relative; /* needed for flame positioning */
+  position: relative;
   padding: 10px;
 }
-
-#cake-img {
-  width: 280px;
-  height: auto;
-  max-height: calc(100vh - 120px);
-  border-radius: 10px;
-}
-
-/* Flame overlay */
+#cake-img { width: 280px; height: auto; max-height: calc(100vh - 120px); border-radius: 10px; }
 #flame {
-  position: absolute;
-  top: 12%;      /* adjust based on cake image */
-  left: 50%;
-  transform: translateX(-50%);
-  width: 40px;
-  height: 40px;
-  cursor: pointer;
+  position: absolute; top: 12%; left: 50%; transform: translateX(-50%);
+  width: 40px; height: 40px; cursor: pointer;
   background: radial-gradient(circle at center, #ff9f3f 0%, #ff6b00 80%);
-  border-radius: 50%;
-  box-shadow: 0 0 10px #ff6b00, 0 0 20px #ff9f3f;
+  border-radius: 50%; box-shadow: 0 0 10px #ff6b00, 0 0 20px #ff9f3f;
 }
-#flame:active {
-  transform: translateX(-50%) scale(0.9);
-}
-
+#flame:active { transform: translateX(-50%) scale(0.9); }
 .popup{position:fixed;left:0;right:0;top:0;bottom:0;display:flex;align-items:center;justify-content:center;z-index:60}
 .popup-inner{background:white;padding:14px;border-radius:10px;box-shadow:0 20px 40px rgba(0,0,0,0.18)}
 .hidden{display:none}
@@ -126,98 +110,25 @@ main{flex:1;padding-top:84px;overflow:auto}
   justify-content: center;
   align-items: center;
 }
+.written { white-space: pre-wrap; font-family: "Segoe UI", Roboto, serif; font-size: 1.5rem; line-height: 1.8; color: #5b3b4a; max-width: 800px; width: 90%; text-align: center; overflow-wrap: break-word; overflow-y: auto; letter-spacing: 0.5px; margin-bottom: 16px; position: relative; z-index: 1; }
+.final-text { font-size: 2.2rem; color: #e91e63; font-weight: 600; margin-top: 24px; text-align: center; font-family: 'Courier New', monospace; z-index: 1; }
+.paper::before { content: ''; position: absolute; inset: 0; background: repeating-linear-gradient(45deg, rgba(255, 255, 255, 0.05), rgba(255, 255, 255, 0.05) 1px, transparent 1px, transparent 12px ); pointer-events: none; z-index: 0; animation: moveLines 6s linear infinite; }
+@keyframes moveLines { 0% { background-position: 0 0; } 100% { background-position: 60px 60px; } }
 
-.written {
-  white-space: pre-wrap;
-  font-family: "Segoe UI", Roboto, serif;
-  font-size: 1.5rem;
-  line-height: 1.8;
-  color: #5b3b4a;
-  max-width: 800px;
-  width: 90%;
-  text-align: center;
-  overflow-wrap: break-word;
-  overflow-y: auto;
-  letter-spacing: 0.5px;
-  margin-bottom: 16px;
-  position: relative;
-  z-index: 1;
-}
+.pencil { z-index: 2; width: 48px; height: 48px; bottom: 12px; right: 12px; transition: transform 0.2s; }
 
-.final-text {
-  font-size: 2.2rem;
-  color: #e91e63;
-  font-weight: 600;
-  margin-top: 24px;
-  text-align: center;
-  font-family: 'Courier New', monospace;
-  z-index: 1;
-}
+/* I LOVE YOU and floating hearts */
+#iloveyou-container { position: relative; width: 100%; height: 100%; pointer-events: none; }
+#iloveyou { display: none; position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%) scale(0); font-size: 4rem; font-weight: 900; color: #e91e63; text-align: center; z-index: 20; opacity: 0; transition: opacity 0.6s ease, transform 0.6s ease; }
+#iloveyou.show { display: flex; opacity: 1; transform: translate(-50%, -50%) scale(1.2); animation: pulse 1s ease forwards; }
 
-.paper::before {
-  content: '';
-  position: absolute;
-  inset: 0;
-  background: repeating-linear-gradient(
-    45deg,
-    rgba(255, 255, 255, 0.05),
-    rgba(255, 255, 255, 0.05) 1px,
-    transparent 1px,
-    transparent 12px
-  );
-  pointer-events: none;
-  z-index: 0;
-  animation: moveLines 6s linear infinite;
-}
-@keyframes moveLines {
-  0% { background-position: 0 0; }
-  100% { background-position: 60px 60px; }
-}
+#iloveyou-container .heart { position: absolute; font-size: 20px; color: #ff2d95; opacity: 0; z-index: 10; pointer-events: none; }
 
-.pencil {
-  z-index: 2;
-  width: 48px;
-  height: 48px;
-  bottom: 12px;
-  right: 12px;
-  transition: transform 0.2s;
-}
-
-#heartsContainer { 
-  position: absolute;
-  top: 0; left: 0;
-  width: 100%; height: 100%;
-  pointer-events: none;
-  overflow: visible;
-  z-index: 1;
-}
-
-.heart {
-  position: absolute;
-  font-size: 24px;
-  color: #e91e63;
-  animation: float 3s forwards;
-}
-
-@keyframes float {
-  0% { transform: translate(0,0) rotate(0deg); opacity: 1; }
-  100% { transform: translate(var(--x), var(--y)) rotate(var(--r)); opacity: 0; }
-}
+@keyframes pulse { 0% { transform: translate(-50%, -50%) scale(0); opacity: 0; } 50% { transform: translate(-50%, -50%) scale(1.4); opacity: 1; } 100% { transform: translate(-50%, -50%) scale(1.2); opacity: 1; } }
 
 /* Flowers grid */
-.flower-grid{
-  display:grid;
-  grid-template-columns:repeat(3,1fr);
-  gap:16px;
-  margin-top:16px;
-}
-.flower-grid img{
-  width:100%;
-  height:320px;
-  object-fit:cover;
-  border-radius:14px;
-  box-shadow:0 10px 25px rgba(0,0,0,0.12);
-}
+.flower-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;margin-top:16px}
+.flower-grid img{width:100%;height:320px;object-fit:cover;border-radius:14px;box-shadow:0 10px 25px rgba(0,0,0,0.12)}
 
 /* Playlist */
 .playlist-wrap{margin-top:6px}
@@ -256,61 +167,12 @@ main{flex:1;padding-top:84px;overflow:auto}
   .cake-svg{width:240px;height:auto} 
 }
 
-/* -------------------------------
-   Paper crumple animation for message section
---------------------------------- */
+/* Paper crumple animation */
 @keyframes crumple {
-  0% {
-    transform: rotate(0deg) scale(1) translateY(0);
-    opacity: 1;
-  }
-  25% {
-    transform: rotate(-3deg) scale(0.97) translateY(-4px);
-  }
-  50% {
-    transform: rotate(4deg) scale(0.94) translateY(-8px);
-  }
-  75% {
-    transform: rotate(-5deg) scale(0.9) translateY(-12px);
-  }
-  100% {
-    transform: rotate(10deg) scale(0.85) translateY(-20px);
-    opacity: 0;
-  }
+  0% { transform: rotate(0deg) scale(1) translateY(0); opacity: 1; }
+  25% { transform: rotate(-3deg) scale(0.97) translateY(-4px); }
+  50% { transform: rotate(4deg) scale(0.94) translateY(-8px); }
+  75% { transform: rotate(-5deg) scale(0.9) translateY(-12px); }
+  100% { transform: rotate(10deg) scale(0.85) translateY(-20px); opacity: 0; }
 }
-
-.paper.crumbled {
-  animation: crumple 1s ease-in forwards;
-  transform-origin: center center;
-}
-/* I LOVE YOU text */
-/* I LOVE YOU ❤️ animation */
-#iloveyou {
-  display: none;          /* hidden at first */
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%) scale(0);
-  font-size: 4rem;
-  font-weight: 900;
-  color: #e91e63;
-  text-align: center;
-  z-index: 100;
-  pointer-events: none;
-  opacity: 0;
-  transition: opacity 0.6s ease, transform 0.6s ease;
-}
-
-/* when visible, scale up */
-#iloveyou.show {
-  display: flex;
-  opacity: 1;
-  transform: translate(-50%, -50%) scale(1.2);
-  animation: pulse 1s ease forwards;
-}
-
-@keyframes pulse {
-  0% { transform: translate(-50%, -50%) scale(0); opacity: 0; }
-  50% { transform: translate(-50%, -50%) scale(1.4); opacity: 1; }
-  100% { transform: translate(-50%, -50%) scale(1.2); opacity: 1; }
-}
+.paper.crumbled { animation: crumple 1s ease-in forwards; transform-origin: center center; }
