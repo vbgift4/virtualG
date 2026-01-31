@@ -54,7 +54,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
   navItems.forEach(btn => {
     btn.addEventListener('click', () => showPage(btn.dataset.target));
-    btn.addEventListener('keydown', e => { if(e.key === 'Enter' || e.key === ' ') { e.preventDefault(); btn.click(); }});
+    btn.addEventListener('keydown', e => { if(e.key === 'Enter' || e.key === ' ') { e.preventDefault(); btn.click(); }} );
   });
   logoBtn.addEventListener('click', () => showPage('home'));
 
@@ -69,7 +69,7 @@ document.addEventListener('DOMContentLoaded', () => {
     homepageAudioPlaying ? pauseHomepageAudio() : startHomepageAudio();
     startConfetti();
   });
-  heroTap.addEventListener('keydown', e => { if(e.key === 'Enter' || e.key === ' ') { e.preventDefault(); heroTap.click(); }});
+  heroTap.addEventListener('keydown', e => { if(e.key === 'Enter' || e.key === ' ') { e.preventDefault(); heroTap.click(); } });
   heroTap.addEventListener('touchstart', ()=>{}, {once:true});
 
   // Cake flame popup
@@ -78,7 +78,7 @@ document.addEventListener('DOMContentLoaded', () => {
   const closeBtn = cakeMessage ? cakeMessage.querySelector('.closeBtn') : null;
   if(flameDiv){
     flameDiv.addEventListener('click', () => { if(cakeMessage) cakeMessage.classList.remove('hidden'); });
-    flameDiv.addEventListener('keydown', e => { if(e.key === 'Enter' || e.key === ' ') { e.preventDefault(); flameDiv.click(); }});
+    flameDiv.addEventListener('keydown', e => { if(e.key === 'Enter' || e.key === ' ') { e.preventDefault(); flameDiv.click(); }} );
   }
   if(closeBtn) closeBtn.addEventListener('click', () => { cakeMessage.classList.add('hidden'); addClickFeedback(closeBtn); });
 
@@ -107,14 +107,16 @@ document.addEventListener('DOMContentLoaded', () => {
       const heart = document.createElement('div');
       heart.className='heart';
       heart.innerHTML='❤️';
-      heart.style.left = Math.random()*iloveyouContainer.offsetWidth + 'px';
-      heart.style.top = Math.random()*iloveyouContainer.offsetHeight + 'px';
+      heart.style.left = Math.random()*iloveyou.offsetWidth + 'px';
+      heart.style.top = Math.random()*iloveyou.offsetHeight + 'px';
       heart.style.fontSize = `${14 + Math.random()*20}px`;
       heart.style.opacity = 1;
-      iloveyouContainer.appendChild(heart);
+      heart.style.position = 'absolute';
+      heart.style.zIndex = 1;
+      iloveyou.appendChild(heart);
 
-      const x = (Math.random()*200 - 100);
-      const y = (Math.random()*200 - 100);
+      const x = (Math.random()*100 - 50);
+      const y = (Math.random()*100 - 50);
       const duration = 3000 + Math.random()*2000;
 
       setTimeout(()=>{
@@ -131,11 +133,19 @@ document.addEventListener('DOMContentLoaded', () => {
   const observer = new MutationObserver(() => {
     const active = document.querySelector('.page.active');
     if(active && active.id==='message' && textEl.textContent.trim()===''){
+      // Reset paper & I LOVE YOU
+      paper.classList.remove('crumbled');
+      iloveyou.classList.remove('show');
+      iloveyou.innerHTML='';
+
       typeWriter(firstMessage, textEl, () => {
         setTimeout(() => {
+          // Add paper crumple
           paper.classList.add('crumbled');
           paper.addEventListener('animationend', () => {
+            // Clear typed text
             textEl.textContent='';
+            // Show I LOVE YOU
             iloveyou.classList.add('show');
             createHearts(50);
             setInterval(()=> createHearts(3), 1200);
@@ -175,7 +185,12 @@ document.addEventListener('DOMContentLoaded', () => {
     li.addEventListener('keydown', e => { if(e.key==='Enter'||e.key===' ') { e.preventDefault(); li.click(); } });
   });
 
-  if(playerClose) playerClose.addEventListener('click', () => { hidePlayer(); addClickFeedback(playerClose); const first=playlistList.querySelector('.playlist-item'); if(first) first.focus(); });
+  if(playerClose) playerClose.addEventListener('click', () => { 
+    hidePlayer(); 
+    addClickFeedback(playerClose); 
+    const first=playlistList.querySelector('.playlist-item'); 
+    if(first) first.focus(); 
+  });
 
   // Confetti
   const confettiCanvas = document.getElementById('confetti');
