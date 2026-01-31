@@ -82,26 +82,30 @@ document.addEventListener('DOMContentLoaded', ()=>{
   const textEl = document.getElementById('typeText');
   const pencil = document.getElementById('pencilSvg');
   const paper = document.querySelector('.paper');
-
   let finalText = document.getElementById('finalText');
+
   if(!finalText){
     finalText = document.createElement('div');
     finalText.id='finalText';
-    finalText.style.fontSize='1.05rem';
-    finalText.style.lineHeight='1.35';
-    finalText.style.marginTop='8px';
+    finalText.className='final-text';
     paper.appendChild(finalText);
   }
 
-  const firstMessage = "Dear you,\n\nToday I celebrate you — your smile, your warmth,\nand every little thing that makes you special.\n\nLove you always.";
+  const firstMessage = `Dear you,
+
+Today I celebrate you — your smile, your warmth,
+and every little thing that makes you special.
+
+Love you always.`;
+
   const loveMessage = "I love you 💖";
 
-  function typeWriter(msg,target,callback){
+  function typeWriter(msg, target, callback){
     target.textContent='';
     let i=0;
     function step(){
-      if(i<msg.length){
-        target.textContent+=msg[i++];
+      if(i < msg.length){
+        target.textContent += msg[i++];
         if(pencil) pencil.style.transform = `translateX(${Math.min(140,i)}px) rotate(${Math.min(8,i/2)}deg)`;
         setTimeout(step, 30 + Math.random()*40);
       } else {
@@ -114,41 +118,42 @@ document.addEventListener('DOMContentLoaded', ()=>{
 
   function createHearts(count){
     for(let i=0;i<count;i++){
-      const heart=document.createElement('div');
+      const heart = document.createElement('div');
       heart.className='heart';
       heart.innerHTML='❤️';
       heart.style.position='absolute';
-      heart.style.left=Math.random()*paper.offsetWidth+'px';
-      heart.style.bottom='0px';
-      heart.style.fontSize=`${10+Math.random()*16}px`;
-      heart.style.opacity=1;
-      heart.style.transform='translateY(0) rotate(0deg)';
-      heart.style.transition='transform 3s ease-out, opacity 3s ease-out';
+      heart.style.left = Math.random()*paper.offsetWidth+'px';
+      heart.style.bottom = '0px';
+      heart.style.fontSize = `${10+Math.random()*16}px`;
+      heart.style.opacity = 1;
+      heart.style.transform = 'translateY(0) rotate(0deg)';
+      heart.style.transition = 'transform 3s ease-out, opacity 3s ease-out';
       paper.appendChild(heart);
 
       setTimeout(()=>{
-        const x=Math.random()*200-100;
-        const y=-Math.random()*300-100;
-        const r=Math.random()*720-360;
-        heart.style.transform=`translate(${x}px, ${y}px) rotate(${r}deg)`;
-        heart.style.opacity=0;
+        const x = Math.random()*200 - 100;
+        const y = -Math.random()*300 - 100;
+        const r = Math.random()*720 - 360;
+        heart.style.transform = `translate(${x}px, ${y}px) rotate(${r}deg)`;
+        heart.style.opacity = 0;
       },50);
 
       setTimeout(()=>heart.remove(),3100);
     }
   }
 
+  // Trigger typing when message page is active
   const observer = new MutationObserver(()=>{
     const active = document.querySelector('.page.active');
     if(active && active.id==='message' && textEl.textContent.trim()===''){
-      typeWriter(firstMessage,textEl,()=>{
+      typeWriter(firstMessage, textEl, ()=>{
         setTimeout(()=>{
-          paper.classList.add('crumbled');
-          paper.addEventListener('animationend',()=>{
+          paper.classList.add('crumbled'); // Make sure .crumbled animation exists in CSS
+          paper.addEventListener('animationend', ()=>{
             textEl.textContent='';
-            finalText.textContent=loveMessage;
+            finalText.textContent = loveMessage;
             createHearts(40);
-          },{once:true});
+          }, {once:true});
         },1000);
       });
     }
