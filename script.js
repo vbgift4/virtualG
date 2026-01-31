@@ -46,7 +46,7 @@ document.addEventListener('DOMContentLoaded', ()=>{
     const current = document.querySelector('.page.active');
     if (current && current.id === 'home' && id !== 'home') {
       stopConfetti();
-      pauseHomepageAudio(); // stop audio when leaving homepage
+      pauseHomepageAudio();
       current.classList.remove('active');
       setTimeout(()=> {
         pages.forEach(p=> p.id === id ? p.classList.add('active') : p.classList.remove('active'));
@@ -59,7 +59,7 @@ document.addEventListener('DOMContentLoaded', ()=>{
     } else {
       pages.forEach(p=> p.id === id ? p.classList.add('active') : p.classList.remove('active'));
       stopConfetti();
-      pauseHomepageAudio(); // stop audio on other pages
+      pauseHomepageAudio();
       scrollMainTop();
     }
   }
@@ -75,7 +75,7 @@ document.addEventListener('DOMContentLoaded', ()=>{
   /* -------------------------
      Hero tap: toggle audio per homepage visit
      ------------------------- */
-  let homepageAudioPlaying = false; // true if music is playing
+  let homepageAudioPlaying = false;
 
   function startHomepageAudio() {
     if (!bgAudio) return;
@@ -110,20 +110,18 @@ document.addEventListener('DOMContentLoaded', ()=>{
       heroTap.click();
     }
   });
-
-  // Optional: ensure first tap on mobile works
   heroTap.addEventListener('touchstart', () => {}, { once: true });
 
-
   /* -------------------------
-     Cake flame popup
+     Cake flame popup (PNG cake)
      ------------------------- */
-  const flameGroup = document.getElementById('flameGroup');
+  const flameDiv = document.getElementById('flame');
   const cakeMessage = document.getElementById('cakeMessage');
   const closeBtn = cakeMessage ? cakeMessage.querySelector('.closeBtn') : null;
-  if (flameGroup){
-    flameGroup.addEventListener('click', ()=> { if (cakeMessage) cakeMessage.classList.remove('hidden'); });
-    flameGroup.addEventListener('keydown', (e)=> { if (e.key==='Enter' || e.key===' ') { e.preventDefault(); flameGroup.click(); }});
+
+  if (flameDiv){
+    flameDiv.addEventListener('click', ()=> { if (cakeMessage) cakeMessage.classList.remove('hidden'); });
+    flameDiv.addEventListener('keydown', (e)=> { if (e.key==='Enter' || e.key===' ') { e.preventDefault(); flameDiv.click(); }});
   }
   if (closeBtn) closeBtn.addEventListener('click', ()=> { cakeMessage.classList.add('hidden'); addClickFeedback(closeBtn); });
 
@@ -135,7 +133,6 @@ document.addEventListener('DOMContentLoaded', ()=>{
   const follow = document.getElementById('messageFollow');
   const message = "Dear you,\n\nToday I celebrate you — your smile, your warmth,\nand every little thing that makes you special.\n\nLove you always.";
   const followMsg = "And one more thing — you're the best part of my every day. 💖";
-
 
   function typeWrite(target, text, onDone){
     if (!target) return;
@@ -265,7 +262,6 @@ document.addEventListener('DOMContentLoaded', ()=>{
     }, { root: null, rootMargin: '120px', threshold: 0.01 });
     lazyImages.forEach(img => imgObserver.observe(img));
   } else {
-    // Fallback: load all immediately
     lazyImages.forEach(img => {
       const src = img.getAttribute('data-src');
       if (src) img.src = src;
@@ -275,8 +271,6 @@ document.addEventListener('DOMContentLoaded', ()=>{
 
   /* -------------------------
      Collapsible sections on small screens
-     - Elements: .collapsible (wrap); .collapsible-toggle (button); .collapsible-content (wrapper)
-     - On small screens (<=900px) collapsible default collapsed; on large screens always open.
      ------------------------- */
   const collapsibles = document.querySelectorAll('.collapsible');
   const breakpoint = window.matchMedia('(max-width: 900px)');
@@ -288,7 +282,6 @@ document.addEventListener('DOMContentLoaded', ()=>{
       if (!toggle || !content) return;
 
       if (breakpoint.matches) {
-        // small screens: start collapsed if data-collapsed attribute present
         const startCollapsed = c.hasAttribute('data-collapsed');
         c.setAttribute('data-open', startCollapsed ? 'false' : 'true');
         toggle.setAttribute('aria-expanded', String(!startCollapsed));
@@ -296,17 +289,14 @@ document.addEventListener('DOMContentLoaded', ()=>{
           const isOpen = c.getAttribute('data-open') === 'true';
           c.setAttribute('data-open', String(!isOpen));
           toggle.setAttribute('aria-expanded', String(isOpen));
-          // scroll into view when opening
           if (!isOpen) {
             const page = c.closest('.page');
             if (page) page.scrollTo({ top: 0, behavior: 'smooth' });
           }
         });
       } else {
-        // large screens: ensure open and remove aria collapsed state
         c.setAttribute('data-open', 'true');
         toggle.setAttribute('aria-expanded', 'true');
-        // clicking toggle on large screens still toggles, but default is open
         toggle.addEventListener('click', ()=> {
           const isOpen = c.getAttribute('data-open') === 'true';
           c.setAttribute('data-open', String(!isOpen));
@@ -315,7 +305,6 @@ document.addEventListener('DOMContentLoaded', ()=>{
       }
     });
   }
-  // initialize and update on resize
   setCollapsibleDefault();
   breakpoint.addEventListener('change', setCollapsibleDefault);
 
@@ -330,6 +319,5 @@ document.addEventListener('DOMContentLoaded', ()=>{
     if (e.key === '5') showPage('playlist');
   });
 
-  // Ensure a home active page exists
   if (!document.querySelector('.page.active')) showPage('home');
 });
