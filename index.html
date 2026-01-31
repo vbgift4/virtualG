@@ -66,47 +66,32 @@
     </section>
 
     <!-- CAKE -->
-    <section id="cake" class="page">
-      <div class="section-inner">
-        <h2 class="section-title">Just for You: A Cake!</h2>
-        <p class="section-sub">Make a wish and tap the flame to blow out the candle!</p>
+<section id="cake" class="page">
+  <div class="section-inner">
+    <h2 class="section-title">Just for You: A Cake!</h2>
+    <p class="section-sub">Make a wish and tap the flame to blow out the candle!</p>
 
-        <div class="cake-wrap" id="cakeWrap" aria-hidden="false">
-          <!-- Vector cartoon cake (SVG) -->
-          <svg id="cartoonCake" class="cake-svg" viewBox="0 0 260 220" role="img" aria-label="Cute cartoon cake">
-            <ellipse cx="130" cy="200" rx="100" ry="12" fill="#ffeef8" opacity="0.9"/>
-            <rect x="35" y="110" width="190" height="50" rx="18" fill="#ffd7ea" stroke="#f6a8d0" stroke-width="3"/>
-            <path d="M35 110c18-28 50-18 95-18s77-10 95 18v6H35z" fill="#fff7ff"/>
-            <rect x="60" y="70" width="140" height="50" rx="14" fill="#ffecf9" stroke="#f6a8d0" stroke-width="3"/>
-            <g fill="#ff7fbf">
-              <rect x="85" y="80" width="6" height="12" rx="3" transform="rotate(-12 85 80)"/>
-              <rect x="110" y="88" width="6" height="12" rx="3" transform="rotate(12 110 88)"/>
-              <rect x="140" y="78" width="6" height="12" rx="3" transform="rotate(-6 140 78)"/>
-              <rect x="170" y="86" width="6" height="12" rx="3" transform="rotate(18 170 86)"/>
-            </g>
-            <rect x="125" y="28" width="10" height="44" rx="3" fill="#6f42c1"/>
-            <g id="flameGroup" class="flame" role="button" tabindex="0" aria-label="Blow out the candle">
-              <path d="M130 20c6 -10 12 -10 12 -18 0 -12 -8 -12 -12 -12s-12 0-12 12c0 8 6 8 12 18z" fill="#ffb84d"/>
-              <path d="M130 16c3 -7 6 -7 6 -12 0 -6 -4 -6 -6 -6s-6 0-6 6c0 5 3 5 6 12z" fill="#fff2c9" opacity="0.85"/>
-            </g>
+    <div class="cake-wrap" id="cakeWrap">
+      <!-- Cake Image -->
+      <img src="/images/babycake.png" 
+           alt="Happy Birthday Cake" 
+           id="cake-img">
 
-            <g transform="translate(90,125)">
-              <circle cx="12" cy="12" r="3" fill="#6b2350"/>
-              <circle cx="68" cy="12" r="3" fill="#6b2350"/>
-              <path d="M20 28 q30 18 48 0" stroke="#6b2350" stroke-width="2.5" fill="none" stroke-linecap="round"/>
-            </g>
-          </svg>
-        </div>
+      <!-- Flame clickable area -->
+      <div id="flame"></div>
+    </div>
 
-        <div id="cakeMessage" class="popup hidden" role="dialog" aria-live="polite">
-          <div class="popup-inner">
-            <p>Yehey! Wish Granted! Tumanda na naman talaga ang baby ko, hahaha. PERO, Cute pa rin yan.❤️</p>
-            <button class="closeBtn">Close</button>
-          </div>
-        </div>
-
+    <!-- Popup Message -->
+    <div id="cakeMessage" class="popup hidden" role="dialog" aria-live="polite">
+      <div class="popup-inner">
+        <p>Yehey! Wish Granted! Tumanda na naman talaga ang baby ko, hahaha. PERO, Cute pa rin yan.❤️</p>
+        <button class="closeBtn">Close</button>
       </div>
-    </section>
+    </div>
+
+  </div>
+</section>
+
 
     <!-- MESSAGE -->
     <section id="message" class="page">
