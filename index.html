@@ -1,4 +1,4 @@
-<!doctype html>
+<!doctype html> 
 <html lang="en">
 <head>
   <meta charset="utf-8" />
@@ -55,76 +55,60 @@
         <h1 class="title">HAPPY BIRTHDAY!</h1>
         <p class="sub">Hope today makes you smile a little more than usual.</p>
 
-        <!-- decorative GIF (non-lazy so it appears quickly on home) -->
+        <!-- decorative GIF -->
         <img src="assets/balloons.gif" alt="" class="balloons" aria-hidden="true"/>
-
         <p class="hint">Tap anywhere here to play music</p>
       </div>
 
-     <audio id="bgAudio" src="assets/song.mp3" preload="auto"></audio>
-
+      <audio id="bgAudio" src="assets/song.mp3" preload="auto"></audio>
     </section>
 
     <!-- CAKE -->
-<section id="cake" class="page">
-  <div class="section-inner">
-    <h2 class="section-title">Just for You: A Cake!</h2>
-    <p class="section-sub">Make a wish and tap the flame to blow out the candle!</p>
+    <section id="cake" class="page">
+      <div class="section-inner">
+        <h2 class="section-title">Just for You: A Cake!</h2>
+        <p class="section-sub">Make a wish and tap the flame to blow out the candle!</p>
 
-    <div class="cake-wrap" id="cakeWrap">
-      <!-- Cake Image -->
-      <img src="assets/babycake.png" 
-           alt="Happy Birthday Cake" 
-           id="cake-img">
+        <div class="cake-wrap" id="cakeWrap">
+          <img src="assets/babycake.png" alt="Happy Birthday Cake" id="cake-img">
+          <div id="flame" role="button" tabindex="0" aria-label="Blow out candle"></div>
+        </div>
 
-      <!-- Flame clickable area -->
-      <div id="flame" role="button" tabindex="0" aria-label="Blow out candle"></div>
-    </div>
-
-    <!-- Popup Message -->
-    <div id="cakeMessage" class="popup hidden" role="dialog" aria-live="polite">
-      <div class="popup-inner">
-        <p>Yehey! Wish Granted! Tumanda na naman talaga ang baby ko, hahaha. PERO, Cute pa rin yan.❤️</p>
-        <button class="closeBtn">Close</button>
+        <div id="cakeMessage" class="popup hidden" role="dialog" aria-live="polite">
+          <div class="popup-inner">
+            <p>Yehey! Wish Granted! Tumanda na naman talaga ang baby ko, hahaha. PERO, Cute pa rin yan.❤️</p>
+            <button class="closeBtn">Close</button>
+          </div>
+        </div>
       </div>
-    </div>
+    </section>
 
-  </div>
-</section>
+    <!-- MESSAGE -->
+    <section id="message" class="page">
+      <div class="section-inner">
+        <h2 class="section-title">Messages</h2>
+        <p class="section-sub">A little note written just for you.</p>
 
+        <!-- Paper with typing animation -->
+        <div class="paper">
+          <div class="written" id="typeText"></div>
+          <svg class="pencil" viewBox="0 0 64 64" id="pencilSvg">
+            <path d="M2 54l10 10 46-46-10-10L2 54z" fill="#d8a24a"/>
+            <path d="M52 6l6 6-6 6-6-6 6-6z" fill="#ffd1a8"/>
+          </svg>
+        </div>
 
+        <!-- Final text after crumple -->
+        <div id="finalText" class="final-text"></div>
 
-   <!-- MESSAGE -->
-<section id="message" class="page">
-  <div class="section-inner">
-    <h2 class="section-title">Messages</h2>
-    <p class="section-sub">A little note written just for you.</p>
-
-    <!-- Paper with typing animation -->
-    <div class="paper">
-      <div class="written" id="typeText"></div>
-      <svg class="pencil" viewBox="0 0 64 64" id="pencilSvg">
-        <path d="M2 54l10 10 46-46-10-10L2 54z" fill="#d8a24a"/>
-        <path d="M52 6l6 6-6 6-6-6 6-6z" fill="#ffd1a8"/>
-      </svg>
-    </div>
-
-    <!-- Final text after crumple -->
-    <div id="finalText" class="final-text"></div>
-
-    <!-- Hearts container -->
-    <div id="heartsContainer"></div>
-  </div>
-</section>
-
+      </div>
+    </section>
 
     <!-- FLOWERS -->
     <section id="flowers" class="page">
       <div class="section-inner">
         <h2 class="section-title">Blooms That Last</h2>
         <p class="section-sub">I don’t give flowers that wither. Instead, I give you these—moments and symbols of something living. As long as they remain here, let them remind you that I am, too.</p>
-
-        <!-- collapsible: on small screens this section will start collapsed -->
         <div class="collapsible" data-collapsed>
           <button class="collapsible-toggle" aria-expanded="true">Show flowers</button>
           <div class="collapsible-content">
@@ -146,7 +130,6 @@
       <div class="section-inner">
         <h2 class="section-title">Birthday Playlist</h2>
         <p class="section-sub">Because birthdays deserve tunes as bright and wonderful as you 😉 </p>
-
         <div class="collapsible" data-collapsed>
           <button class="collapsible-toggle" aria-expanded="true">Show playlist</button>
           <div class="collapsible-content">
@@ -159,7 +142,6 @@
                     <li class="playlist-item" tabindex="0" data-youtube="https://www.youtube.com/embed/MRSaiAREnwI?si=EYaJGmSLT8jlj4T8">Song 3 — Good vibes only</li>
                   </ul>
                 </div>
-
                 <div class="playlist-player" id="playlistPlayer" aria-hidden="true">
                   <div class="player-header">
                     <strong id="playerTitle">Select a song</strong>
@@ -173,9 +155,9 @@
             </div>
           </div>
         </div>
-
       </div>
     </section>
+
   </main>
 
   <footer class="footer">
