@@ -80,23 +80,19 @@ document.addEventListener('DOMContentLoaded', ()=>{
   // Typing animation + paper crumple + "I LOVE YOU ❤️" + hearts
   // -------------------------
   const textEl = document.getElementById('typeText');
-  const pencil = document.getElementById('pencilSvg');
   const paper = document.querySelector('.paper');
   const iloveyou = document.getElementById('iloveyou');
 
   const firstMessage = "Dear you,\n\nToday I celebrate you — your smile, your warmth,\nand every little thing that makes you special.\n\nLove you always.";
-  const loveMessage = "I LOVE YOU ❤️";
 
-  function typeWriter(msg,target,callback){
-    target.textContent='';
-    let i=0;
+  function typeWriter(msg, target, callback){
+    target.textContent = '';
+    let i = 0;
     function step(){
-      if(i<msg.length){
-        target.textContent+=msg[i++];
-        if(pencil) pencil.style.transform = `translateX(${Math.min(140,i)}px) rotate(${Math.min(8,i/2)}deg)`;
-        setTimeout(step, 30 + Math.random()*40);
+      if(i < msg.length){
+        target.textContent += msg[i++];
+        setTimeout(step, 30 + Math.random() * 40);
       } else {
-        if(pencil) pencil.style.transform='translateX(0) rotate(0)';
         if(callback) callback();
       }
     }
@@ -129,27 +125,16 @@ document.addEventListener('DOMContentLoaded', ()=>{
     }
   }
 
+  // Start typing when user navigates to message page
   const observer = new MutationObserver(()=>{
     const active = document.querySelector('.page.active');
     if(active && active.id==='message' && textEl.textContent.trim()===''){
-      // Hide "I LOVE YOU" initially
-      if(iloveyou) iloveyou.style.display = 'none';
-      typeWriter(firstMessage,textEl,()=>{
+      typeWriter(firstMessage, textEl, () => {
         setTimeout(()=>{
-          // Crumple animation
           paper.classList.add('crumbled');
           paper.addEventListener('animationend', ()=>{
             textEl.textContent='';
-            if(iloveyou){
-              iloveyou.style.display='flex';
-              iloveyou.style.justifyContent='center';
-              iloveyou.style.alignItems='center';
-              iloveyou.style.fontSize='2.2rem';
-              iloveyou.style.fontWeight='800';
-              iloveyou.style.textAlign='center';
-              iloveyou.style.margin='0 auto';
-              iloveyou.style.opacity='1';
-            }
+            iloveyou.classList.add('show'); // show the I LOVE YOU
             createHearts(40);
           }, {once:true});
         }, 1000);
@@ -180,7 +165,7 @@ document.addEventListener('DOMContentLoaded', ()=>{
   function hidePlayer(){ if(!playerWrap||!playerIframe) return; playerWrap.setAttribute('aria-hidden','true'); try{ playerIframe.src=''; } catch(e){} }
   playlistItems.forEach(li=>{
     li.addEventListener('click',()=>{ showPlayer(li.textContent.trim(),li.dataset.youtube); });
-    li.addEventListener('keydown',(e)=>{ if(e.key==='Enter'||e.key===' '){ e.preventDefault(); li.click(); }});
+    li.addEventListener('keydown',(e)=>{ if(e.key==='Enter'||e.key===' '){ e.preventDefault(); li.click(); }} );
   });
   if(playerClose) playerClose.addEventListener('click',()=>{ hidePlayer(); addClickFeedback(playerClose); const first=playlistList.querySelector('.playlist-item'); if(first) first.focus(); });
 
