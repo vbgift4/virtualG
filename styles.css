@@ -58,9 +58,7 @@ body {
   border-radius: 8px;
   cursor: pointer;
 }
-.logo:focus {
-  outline: 2px solid rgba(0, 0, 0, 0.08);
-}
+.logo:focus { outline: 2px solid rgba(0, 0, 0, 0.08); }
 
 .nav-right {
   display: flex;
@@ -81,12 +79,8 @@ body {
   cursor: pointer;
   transition: background 0.18s, color 0.18s, transform 0.08s;
 }
-.nav-item:focus {
-  outline: 2px solid rgba(0, 0, 0, 0.06);
-}
-.nav-item:hover {
-  background: rgba(255, 255, 255, 0.6);
-}
+.nav-item:focus { outline: 2px solid rgba(0, 0, 0, 0.06); }
+.nav-item:hover { background: rgba(255, 255, 255, 0.6); }
 .nav-item.active {
   background: linear-gradient(90deg, var(--violet-start), var(--violet-end));
   color: white;
@@ -241,67 +235,7 @@ main {
   100% { transform: translateY(calc(-240vh)) rotate(-8deg); opacity: 0; }
 }
 
-/* CAKE */
-.cake-wrap {
-  display: flex;
-  justify-content: center;
-  position: relative;
-  padding: 10px;
-}
-
-#cake-img {
-  width: 280px;
-  height: auto;
-  max-height: calc(100vh - 120px);
-  border-radius: 10px;
-}
-
-#flame {
-  position: absolute;
-  top: 12%;
-  left: 50%;
-  transform: translateX(-50%);
-  width: 40px;
-  height: 40px;
-  cursor: pointer;
-  background: radial-gradient(circle at center, #ff9f3f 0%, #ff6b00 80%);
-  border-radius: 50%;
-  box-shadow: 0 0 10px #ff6b00, 0 0 20px #ff9f3f;
-}
-#flame:active { transform: translateX(-50%) scale(0.9); }
-
-.popup {
-  position: fixed;
-  left: 0;
-  right: 0;
-  top: 0;
-  bottom: 0;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  z-index: 60;
-}
-
-.popup-inner {
-  background: white;
-  padding: 14px;
-  border-radius: 10px;
-  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.18);
-}
-
-.hidden { display: none; }
-
-.closeBtn {
-  margin-top: 8px;
-  background: var(--accent);
-  border: 0;
-  padding: 6px 10px;
-  border-radius: 8px;
-  color: white;
-  cursor: pointer;
-}
-
-/* MESSAGE */
+/* PAPER */
 .paper {
   position: relative;
   background: linear-gradient(135deg, #fff0f5, #ffe4e1);
@@ -313,33 +247,7 @@ main {
   flex-direction: column;
   justify-content: center;
   align-items: center;
-}
-
-.written {
-  white-space: pre-wrap;
-  font-family: "Segoe UI", Roboto, serif;
-  font-size: 1.5rem;
-  line-height: 1.8;
-  color: #5b3b4a;
-  max-width: 800px;
-  width: 90%;
-  text-align: center;
-  overflow-wrap: break-word;
-  overflow-y: auto;
-  letter-spacing: 0.5px;
-  margin-bottom: 16px;
-  position: relative;
-  z-index: 1;
-}
-
-.final-text {
-  font-size: 2.2rem;
-  color: #e91e63;
-  font-weight: 600;
-  margin-top: 24px;
-  text-align: center;
-  font-family: 'Courier New', monospace;
-  z-index: 1;
+  transition: transform 0.6s ease, rotate 0.6s ease;
 }
 
 .paper::before {
@@ -363,17 +271,38 @@ main {
   100% { background-position: 60px 60px; }
 }
 
-.pencil {
-  z-index: 2;
-  width: 48px;
-  height: 48px;
-  bottom: 12px;
-  right: 12px;
-  transition: transform 0.2s;
+/* Paper crumple effect */
+.paper.crumbled {
+  animation: crumple 1s forwards;
 }
 
-/* -------------------- */
-/* I LOVE YOU ❤️ FLOATING HEARTS */
+@keyframes crumple {
+  0% { transform: rotate(0deg) scale(1) translate(0,0); }
+  25% { transform: rotate(-3deg) scale(0.98) translate(-4px,2px); }
+  50% { transform: rotate(2deg) scale(0.96) translate(2px,-3px); }
+  75% { transform: rotate(-2deg) scale(0.94) translate(-2px,3px); }
+  100% { transform: rotate(0deg) scale(0.9) translate(0,0); opacity:0.95; }
+}
+
+/* WRITTEN TEXT */
+.written {
+  white-space: pre-wrap;
+  font-family: "Segoe UI", Roboto, serif;
+  font-size: 1.5rem;
+  line-height: 1.8;
+  color: #5b3b4a;
+  max-width: 800px;
+  width: 90%;
+  text-align: center;
+  overflow-wrap: break-word;
+  overflow-y: auto;
+  letter-spacing: 0.5px;
+  margin-bottom: 16px;
+  position: relative;
+  z-index: 1;
+}
+
+/* I LOVE YOU */
 #iloveyou-container {
   position: relative;
   width: 100%;
@@ -420,5 +349,3 @@ main {
   text-shadow: 0 0 6px #ff66c4, 0 0 12px #ff66c4, 0 0 18px #ff3380;
   transition: transform 0.2s linear, opacity 0.2s linear;
 }
-
-/* -------------------- END OF FLOATING HEARTS */
