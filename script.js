@@ -1,3 +1,4 @@
+// Main interactions: nav, confetti, balloons, cake flame popup, message typing, playlist, lazy-load, collapsibles
 document.addEventListener('DOMContentLoaded', ()=>{
 
   const navItems = document.querySelectorAll('.nav-item');
@@ -13,7 +14,6 @@ document.addEventListener('DOMContentLoaded', ()=>{
     clearTimeout(btn._clickTimeout);
     btn._clickTimeout = setTimeout(()=> btn.classList.remove('clicked'), 280);
   }
-
   document.querySelectorAll('button:not(.nav-item)').forEach(b=>{
     b.addEventListener('mousedown', ()=> addClickFeedback(b));
     b.addEventListener('keydown', (e)=>{ if (e.key==='Enter'||e.key===' ') addClickFeedback(b); });
@@ -50,25 +50,23 @@ document.addEventListener('DOMContentLoaded', ()=>{
     btn.addEventListener('click', ()=> showPage(btn.dataset.target));
     btn.addEventListener('keydown', (e)=>{ if(e.key==='Enter'||e.key===' ') { e.preventDefault(); btn.click(); }});
   });
-  if(logoBtn) logoBtn.addEventListener('click', ()=> showPage('home'));
+  logoBtn.addEventListener('click', ()=> showPage('home'));
 
   let homepageAudioPlaying = false;
   function startHomepageAudio(){ if(!bgAudio) return; bgAudio.play().then(()=>{ homepageAudioPlaying=true; }).catch(()=>{}); }
   function pauseHomepageAudio(){ if(!bgAudio) return; bgAudio.pause(); homepageAudioPlaying=false; }
 
-  if(heroTap){
-    heroTap.addEventListener('click', ()=>{
-      const home = document.getElementById('home');
-      if(!home || !home.classList.contains('active')) return;
-      if(homepageAudioPlaying) pauseHomepageAudio();
-      else startHomepageAudio();
-      startConfetti();
-    });
-    heroTap.addEventListener('keydown',(e)=>{ if(e.key==='Enter'||e.key===' '){ e.preventDefault(); heroTap.click(); }});
-    heroTap.addEventListener('touchstart',()=>{}, {once:true});
-  }
+  heroTap.addEventListener('click', ()=>{
+    const home = document.getElementById('home');
+    if(!home || !home.classList.contains('active')) return;
+    if(homepageAudioPlaying) pauseHomepageAudio();
+    else startHomepageAudio();
+    startConfetti();
+  });
+  heroTap.addEventListener('keydown',(e)=>{ if(e.key==='Enter'||e.key===' '){ e.preventDefault(); heroTap.click(); }});
+  heroTap.addEventListener('touchstart',()=>{}, {once:true});
 
-  // Cake flame popup
+  // Cake flame
   const flameDiv = document.getElementById('flame');
   const cakeMessage = document.getElementById('cakeMessage');
   const closeBtn = cakeMessage ? cakeMessage.querySelector('.closeBtn') : null;
@@ -79,19 +77,12 @@ document.addEventListener('DOMContentLoaded', ()=>{
   if(closeBtn) closeBtn.addEventListener('click', ()=>{ cakeMessage.classList.add('hidden'); addClickFeedback(closeBtn); });
 
   // -------------------------
-  // Message typing, paper crumple, "I love you 💖", hearts
+  // Typing animation + paper crumple + "I love you 💖" + hearts
   // -------------------------
-  const paper = document.querySelector('.paper');
   const textEl = document.getElementById('typeText');
   const pencil = document.getElementById('pencilSvg');
-  let finalText = document.getElementById('finalText');
-
-  if(!finalText){
-    finalText = document.createElement('div');
-    finalText.id='finalText';
-    finalText.classList.add('final-text');
-    paper.appendChild(finalText);
-  }
+  const paper = document.querySelector('.paper');
+  const finalText = document.getElementById('finalText');
 
   const firstMessage = "Dear you,\n\nToday I celebrate you — your smile, your warmth,\nand every little thing that makes you special.\n\nLove you always.";
   const loveMessage = "I love you 💖";
@@ -113,20 +104,27 @@ document.addEventListener('DOMContentLoaded', ()=>{
   }
 
   function createHearts(count){
-    const heartsContainer = document.getElementById('heartsContainer') || (()=>{ 
-      const div=document.createElement('div'); div.id='heartsContainer'; paper.appendChild(div); return div;
-    })();
     for(let i=0;i<count;i++){
       const heart=document.createElement('div');
       heart.className='heart';
-      heart.textContent='❤️';
-      const x=Math.random()*200-100;
-      const y=-Math.random()*300-100;
-      const r=Math.random()*720-360;
-      heart.style.setProperty('--x', `${x}px`);
-      heart.style.setProperty('--y', `${y}px`);
-      heart.style.setProperty('--r', `${r}deg`);
-      heartsContainer.appendChild(heart);
+      heart.innerHTML='❤️';
+      heart.style.position='absolute';
+      heart.style.left=Math.random()*paper.offsetWidth+'px';
+      heart.style.bottom='0px';
+      heart.style.fontSize=`${10+Math.random()*16}px`;
+      heart.style.opacity=1;
+      heart.style.transform='translateY(0) rotate(0deg)';
+      heart.style.transition='transform 3s ease-out, opacity 3s ease-out';
+      paper.appendChild(heart);
+
+      setTimeout(()=>{
+        const x=Math.random()*200-100;
+        const y=-Math.random()*300-100;
+        const r=Math.random()*720-360;
+        heart.style.transform=`translate(${x}px, ${y}px) rotate(${r}deg)`;
+        heart.style.opacity=0;
+      },50);
+
       setTimeout(()=>heart.remove(),3100);
     }
   }
@@ -134,16 +132,14 @@ document.addEventListener('DOMContentLoaded', ()=>{
   const observer = new MutationObserver(()=>{
     const active = document.querySelector('.page.active');
     if(active && active.id==='message' && textEl.textContent.trim()===''){
-      // Start typing
       typeWriter(firstMessage,textEl,()=>{
-        // Delay before crumple
         setTimeout(()=>{
           paper.classList.add('crumbled');
           paper.addEventListener('animationend',()=>{
             textEl.textContent='';
-            finalText.textContent = loveMessage;
+            finalText.textContent=loveMessage;
             createHearts(40);
-          }, {once:true});
+          },{once:true});
         },1000);
       });
     }
