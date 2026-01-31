@@ -1,4 +1,3 @@
-// Main interactions: nav, confetti, balloons, cake flame popup, message typing, playlist, lazy-load, collapsibles
 document.addEventListener('DOMContentLoaded', ()=>{
 
   const navItems = document.querySelectorAll('.nav-item');
@@ -77,11 +76,12 @@ document.addEventListener('DOMContentLoaded', ()=>{
   if(closeBtn) closeBtn.addEventListener('click', ()=>{ cakeMessage.classList.add('hidden'); addClickFeedback(closeBtn); });
 
   // -------------------------
-  // Typing animation + paper crumple + "I LOVE YOU ❤️" + hearts
+  // Typing animation + paper crumple + "I LOVE YOU ❤️" + floating hearts
   // -------------------------
   const textEl = document.getElementById('typeText');
   const paper = document.querySelector('.paper');
   const iloveyou = document.getElementById('iloveyou');
+  const iloveyouContainer = document.getElementById('iloveyou-container');
 
   const firstMessage = "Dear you,\n\nToday I celebrate you — your smile, your warmth,\nand every little thing that makes you special.\n\nLove you always.";
 
@@ -101,27 +101,27 @@ document.addEventListener('DOMContentLoaded', ()=>{
 
   function createHearts(count){
     for(let i=0;i<count;i++){
-      const heart=document.createElement('div');
+      const heart = document.createElement('div');
       heart.className='heart';
       heart.innerHTML='❤️';
-      heart.style.position='absolute';
-      heart.style.left=Math.random()*paper.offsetWidth+'px';
-      heart.style.bottom='0px';
-      heart.style.fontSize=`${10+Math.random()*16}px`;
-      heart.style.opacity=1;
-      heart.style.transform='translateY(0) rotate(0deg)';
-      heart.style.transition='transform 3s ease-out, opacity 3s ease-out';
-      paper.appendChild(heart);
+      heart.style.left = Math.random()*iloveyouContainer.offsetWidth + 'px';
+      heart.style.top = Math.random()*iloveyouContainer.offsetHeight + 'px';
+      heart.style.fontSize = `${14 + Math.random()*20}px`;
+      heart.style.opacity = 1;
+      heart.style.transform = `translate(0,0)`;
+      iloveyouContainer.appendChild(heart);
+
+      const x = (Math.random()*200 - 100);
+      const y = (Math.random()*200 - 100);
+      const duration = 3000 + Math.random()*2000;
 
       setTimeout(()=>{
-        const x=Math.random()*200-100;
-        const y=-Math.random()*300-100;
-        const r=Math.random()*720-360;
-        heart.style.transform=`translate(${x}px, ${y}px) rotate(${r}deg)`;
-        heart.style.opacity=0;
+        heart.style.transition = `transform ${duration}ms ease-out, opacity ${duration}ms ease-out`;
+        heart.style.transform = `translate(${x}px, ${y}px)`;
+        heart.style.opacity = 0;
       },50);
 
-      setTimeout(()=>heart.remove(),3100);
+      setTimeout(()=> heart.remove(), 3500);
     }
   }
 
@@ -135,7 +135,9 @@ document.addEventListener('DOMContentLoaded', ()=>{
           paper.addEventListener('animationend', ()=>{
             textEl.textContent='';
             iloveyou.classList.add('show'); // show the I LOVE YOU
-            createHearts(40);
+            createHearts(50); // floating hearts behind
+            // continuous hearts
+            setInterval(()=> createHearts(3), 1200);
           }, {once:true});
         }, 1000);
       });
