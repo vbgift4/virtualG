@@ -119,11 +119,12 @@ main{flex:1;padding-top:84px;overflow:auto}
   position:relative;
   background:#fffef8;
   border-radius:8px;
-  padding:10px 12px;
+  padding:12px;
   min-height:auto;
   max-height: calc(100vh - 100px);
   box-shadow:0 6px 14px rgba(0,0,0,0.05);
   overflow:hidden;
+  transition: transform 0.8s ease, opacity 0.8s ease;
 }
 .written{
   white-space:pre-wrap;
@@ -145,13 +146,42 @@ main{flex:1;padding-top:84px;overflow:auto}
   opacity:0.95;
   transition:transform .2s;
 }
-.follow{
-  margin-top:6px;
-  background:linear-gradient(90deg,#fff #f9f4ff);
-  padding:6px 8px;
-  border-radius:8px;
-  box-shadow:inset 0 1px 0 rgba(255,255,255,0.6);
-  font-size:0.9rem;
+.final-text {
+  font-size: 1.8rem;
+  color: #e91e63;
+  margin-top: 12px;
+  min-height: 2rem;
+  font-family: 'Courier New', monospace;
+}
+#heartsContainer {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  overflow: visible;
+}
+.heart {
+  position: absolute;
+  font-size: 20px;
+  color: #e91e63;
+  animation: float 3s forwards;
+}
+@keyframes float {
+  0% { transform: translate(0,0) rotate(0deg); opacity: 1; }
+  100% { transform: translate(var(--x), var(--y)) rotate(var(--r)); opacity: 0; }
+}
+.paper.crumbled {
+  animation: crumple 1s forwards;
+}
+@keyframes crumple {
+  0% { transform: rotate(0deg) scale(1) translate(0,0); }
+  20% { transform: rotate(15deg) scale(0.9) translate(5px, -5px); }
+  40% { transform: rotate(-10deg) scale(0.8) translate(-5px, 5px); }
+  60% { transform: rotate(10deg) scale(0.6) translate(5px, -5px); }
+  80% { transform: rotate(-15deg) scale(0.4) translate(-5px, 5px); }
+  100% { transform: rotate(0deg) scale(0); opacity: 0; }
 }
 
 /* Flowers grid */
