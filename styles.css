@@ -283,3 +283,23 @@ main{flex:1;padding-top:84px;overflow:auto}
   animation: crumple 1s ease-in forwards;
   transform-origin: center center;
 }
+#iloveyou {
+  display: none; /* hidden by default */
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  font-size: 4rem;
+  font-weight: 900;
+  color: #e91e63;
+  text-align: center;
+  z-index: 20;
+  opacity: 0;
+  animation: fadeIn 1.2s forwards;
+  pointer-events: none;
+}
+
+@keyframes fadeIn {
+  0% { opacity: 0; transform: translate(-50%, -45%) scale(0.8); }
+  100% { opacity: 1; transform: translate(-50%, -50%) scale(1); }
+}
