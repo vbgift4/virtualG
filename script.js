@@ -147,10 +147,10 @@ document.addEventListener('DOMContentLoaded', ()=>{
             textEl.textContent='';
 
             // SHOW FULL-PAGE I LOVE YOU ❤️
-            if(iloveyou){
-              iloveyou.style.display='flex';
-              iloveyou.style.opacity=1;
-            }
+if(iloveyou){
+  iloveyou.style.display='flex';
+  iloveyou.classList.add('show'); // triggers the CSS animation
+}
 
             // Hearts animation
             createHearts(40);
