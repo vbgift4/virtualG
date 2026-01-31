@@ -59,6 +59,7 @@ document.addEventListener('DOMContentLoaded', ()=>{
   }
 
   function createHearts(count){
+    if (!paper) return;
     for(let i=0;i<count;i++){
       const heart=document.createElement('div');
       heart.className='heart';
@@ -121,14 +122,15 @@ document.addEventListener('DOMContentLoaded', ()=>{
       typingInProgress = true;
       setTimeout(() => {
         typeWriter(firstMessage, textEl, () => {
-          // After typing finishes, start crumple animation
+          // After typing finishes, add crumpled class
           if (paper) paper.classList.add('crumbled');
 
-          // Listen for animation end once
-          if (paper) paper.addEventListener('animationend', () => {
-            createHearts(40);
+          // Wait a short moment to let the crumple effect show
+          setTimeout(() => {
+            textEl.textContent = '';
             if (iloveyou) iloveyou.classList.add('show');
-          }, { once: true });
+            createHearts(40);
+          }, 700);
         });
       }, 150);
     }
@@ -136,7 +138,7 @@ document.addEventListener('DOMContentLoaded', ()=>{
 
   navItems.forEach(btn=>{
     btn.addEventListener('click', ()=> showPage(btn.dataset.target));
-    btn.addEventListener('keydown', (e)=>{ if(e.key==='Enter'||e.key===' ') { e.preventDefault(); btn.click(); }});
+    btn.addEventListener('keydown', (e)=>{ if(e.key==='Enter'||e.key===' ') { e.preventDefault(); btn.click(); }} );
   });
   if (logoBtn) logoBtn.addEventListener('click', ()=> showPage('home'));
 
@@ -155,7 +157,7 @@ document.addEventListener('DOMContentLoaded', ()=>{
       else startHomepageAudio();
       startConfetti();
     });
-    heroTap.addEventListener('keydown',(e)=>{ if(e.key==='Enter'||e.key===' '){ e.preventDefault(); heroTap.click(); }});
+    heroTap.addEventListener('keydown',(e)=>{ if(e.key==='Enter'||e.key===' '){ e.preventDefault(); heroTap.click(); }} );
     heroTap.addEventListener('touchstart',()=>{}, {once:true});
   }
 
@@ -167,7 +169,7 @@ document.addEventListener('DOMContentLoaded', ()=>{
   const closeBtn = cakeMessage ? cakeMessage.querySelector('.closeBtn') : null;
   if(flameDiv){
     flameDiv.addEventListener('click', ()=> { if(cakeMessage) cakeMessage.classList.remove('hidden'); });
-    flameDiv.addEventListener('keydown', (e)=>{ if(e.key==='Enter'||e.key===' '){ e.preventDefault(); flameDiv.click(); }});
+    flameDiv.addEventListener('keydown', (e)=>{ if(e.key==='Enter'||e.key===' '){ e.preventDefault(); flameDiv.click(); }} );
   }
   if(closeBtn) closeBtn.addEventListener('click', ()=>{ cakeMessage.classList.add('hidden'); addClickFeedback(closeBtn); });
 
